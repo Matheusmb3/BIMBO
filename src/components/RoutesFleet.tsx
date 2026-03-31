@@ -76,7 +76,7 @@ export function RoutesFleet() {
         <div className="bg-gray-100 rounded-[20px] border border-gray-200 overflow-hidden relative min-h-[400px]">
           <MapContainer
             center={[-23.55052, -46.633308]}
-            zoom={11}
+            zoom={13}
             className="absolute inset-0 h-full w-full"
             zoomControl={false}
             scrollWheelZoom={false}
@@ -88,8 +88,21 @@ export function RoutesFleet() {
             />
           </MapContainer>
 
-          <div className="absolute top-4 left-4 z-[1000] bg-black/70 text-white px-3 py-2 rounded-full text-xs font-bold tracking-wide shadow-lg backdrop-blur-sm">
-            São Paulo - Visão de satélite
+          <div className="absolute top-1/4 left-1/4 z-[1000]">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#FF4F00] rounded-full animate-ping absolute"></div>
+              <div className="w-4 h-4 bg-[#FF4F00] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
+          </div>
+          <div className="absolute top-1/2 left-1/2 z-[1000]">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#4E18FF] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
+          </div>
+          <div className="absolute bottom-1/3 right-1/4 z-[1000]">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#3D7700] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
           </div>
 
           <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/20">
