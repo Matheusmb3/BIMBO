@@ -1,0 +1,77 @@
+﻿2026-03-31T14:44:10.8162022Z ##[group]Run JamesIves/github-pages-deploy-action@v4
+2026-03-31T14:44:10.8162368Z with:
+2026-03-31T14:44:10.8162533Z   folder: dist
+2026-03-31T14:44:10.8162739Z   branch: gh-pages
+2026-03-31T14:44:10.8163058Z   token: ***
+2026-03-31T14:44:10.8163232Z   clean: true
+2026-03-31T14:44:10.8163397Z   force: true
+2026-03-31T14:44:10.8163559Z   attempt-limit: 3
+2026-03-31T14:44:10.8163740Z ##[endgroup]
+2026-03-31T14:44:10.9128975Z 
+2026-03-31T14:44:10.9129679Z     ╭━━━╮╭╮╭╮╱╭╮╱╱╭╮╱╱╭━━━╮
+2026-03-31T14:44:10.9130312Z     ┃╭━╮┣╯╰┫┃╱┃┃╱╱┃┃╱╱┃╭━╮┃
+2026-03-31T14:44:10.9130862Z     ┃┃╱╰╋╮╭┫╰━╯┣╮╭┫╰━╮┃╰━╯┣━━┳━━┳━━┳━━╮
+2026-03-31T14:44:10.9131411Z     ┃┃╭━╋┫┃┃╭━╮┃┃┃┃╭╮┃┃╭━━┫╭╮┃╭╮┃┃━┫━━┫
+2026-03-31T14:44:10.9131946Z     ┃╰┻━┃┃╰┫┃╱┃┃╰╯┃╰╯┃┃┃╱╱┃╭╮┃╰╯┃┃━╋━━┃
+2026-03-31T14:44:10.9132467Z     ╰━━━┻┻━┻╯╱╰┻━━┻━━╯╰╯╱╱╰╯╰┻━╮┣━━┻━━╯
+2026-03-31T14:44:10.9132978Z     ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╭━╯┃
+2026-03-31T14:44:10.9133454Z     ╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╱╰━━╯
+2026-03-31T14:44:10.9133934Z     ╭━━━╮╱╱╱╱╱╭╮╱╱╱╱╱╱╱╱╭━━━╮╱╱╭╮
+2026-03-31T14:44:10.9134818Z     ╰╮╭╮┃╱╱╱╱╱┃┃╱╱╱╱╱╱╱╱┃╭━╮┃╱╭╯╰╮
+2026-03-31T14:44:10.9135394Z     ╱┃┃┃┣━━┳━━┫┃╭━━┳╮╱╭╮┃┃╱┃┣━┻╮╭╋┳━━┳━╮
+2026-03-31T14:44:10.9135768Z     ╱┃┃┃┃┃━┫╭╮┃┃┃╭╮┃┃╱┃┃┃╰━╯┃╭━┫┃┣┫╭╮┃╭╮╮
+2026-03-31T14:44:10.9136105Z     ╭╯╰╯┃┃━┫╰╯┃╰┫╰╯┃╰━╯┃┃╭━╮┃╰━┫╰┫┃╰╯┃┃┃┃
+2026-03-31T14:44:10.9136423Z     ╰━━━┻━━┫╭━┻━┻━━┻━╮╭╯╰╯╱╰┻━━┻━┻┻━━┻╯╰╯
+2026-03-31T14:44:10.9136713Z     ╱╱╱╱╱╱╱┃┃╱╱╱╱╱╱╭━╯┃
+2026-03-31T14:44:10.9136953Z     ╱╱╱╱╱╱╱╰╯╱╱╱╱╱╱╰━━╯
+2026-03-31T14:44:10.9137150Z     
+2026-03-31T14:44:10.9137309Z 
+2026-03-31T14:44:10.9137557Z     💖 Support: https://github.com/sponsors/JamesIves
+2026-03-31T14:44:10.9137994Z     📣 Maintained by James Ives: https://jamesiv.es
+2026-03-31T14:44:10.9138262Z 
+2026-03-31T14:44:10.9138584Z     🚀 Getting Started Guide: https://github.com/JamesIves/github-pages-deploy-action
+2026-03-31T14:44:10.9139332Z     ❓ Discussions / Q&A: https://github.com/JamesIves/github-pages-deploy-action/discussions
+2026-03-31T14:44:10.9140017Z     🔧 Report a Bug: https://github.com/JamesIves/github-pages-deploy-action/issues
+2026-03-31T14:44:10.9140587Z Checking configuration and starting deployment… 🚦
+2026-03-31T14:44:10.9140951Z Deploying using Deploy Token… 🔑
+2026-03-31T14:44:10.9141217Z Configuring git…
+2026-03-31T14:44:10.9172904Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/BIMBO/BIMBO
+2026-03-31T14:44:10.9268476Z [command]/usr/bin/git config user.name Matheusmb3
+2026-03-31T14:44:10.9308356Z [command]/usr/bin/git config user.email matheusmenezes449@yahoo.com.br
+2026-03-31T14:44:10.9347442Z [command]/usr/bin/git config core.ignorecase false
+2026-03-31T14:44:10.9387118Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-03-31T14:44:10.9427416Z [command]/usr/bin/git remote rm origin
+2026-03-31T14:44:10.9473792Z [command]/usr/bin/git remote add origin ***github.com/Matheusmb3/BIMBO.git
+2026-03-31T14:44:10.9502568Z Git configured… 🔧
+2026-03-31T14:44:10.9565567Z Starting to commit changes…
+2026-03-31T14:44:10.9580386Z [command]/usr/bin/git ls-remote --heads ***github.com/Matheusmb3/BIMBO.git refs/heads/gh-pages
+2026-03-31T14:44:11.0813573Z Creating worktree…
+2026-03-31T14:44:11.0837075Z [command]/usr/bin/git worktree add --no-checkout --detach github-pages-deploy-action-temp-deployment-folder
+2026-03-31T14:44:11.0868172Z Preparing worktree (detached HEAD edefb70)
+2026-03-31T14:44:11.0891874Z [command]/usr/bin/git checkout --orphan gh-pages
+2026-03-31T14:44:11.0942422Z Switched to a new branch 'gh-pages'
+2026-03-31T14:44:11.0950839Z Created the gh-pages branch… 🔧
+2026-03-31T14:44:11.0963276Z [command]/usr/bin/git reset --hard
+2026-03-31T14:44:11.1012737Z [command]/usr/bin/git commit --no-verify --allow-empty -m Initial gh-pages commit
+2026-03-31T14:44:11.1067039Z [gh-pages (root-commit) a6856fb] Initial gh-pages commit
+2026-03-31T14:44:11.1083096Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/BIMBO/BIMBO/github-pages-deploy-action-temp-deployment-folder
+2026-03-31T14:44:11.1159776Z [command]/usr/bin/rsync -q -av --checksum --progress /home/runner/work/BIMBO/BIMBO/dist/. github-pages-deploy-action-temp-deployment-folder --delete --exclude CNAME --exclude .nojekyll --exclude .ssh --exclude .git --exclude .github
+2026-03-31T14:44:11.1639161Z Checking if there are files to commit…
+2026-03-31T14:44:11.1701519Z [command]/usr/bin/git add --all .
+2026-03-31T14:44:11.1860305Z [command]/usr/bin/git checkout -b github-pages-deploy-action/98dnt12ox
+2026-03-31T14:44:11.1891754Z Switched to a new branch 'github-pages-deploy-action/98dnt12ox'
+2026-03-31T14:44:11.1909677Z [command]/usr/bin/git commit -m Deploying to gh-pages from @ Matheusmb3/BIMBO@edefb70dafecbf71e620b8e299512dd5dba0219c 🚀 --quiet --no-verify
+2026-03-31T14:44:11.1966239Z Force-pushing changes...
+2026-03-31T14:44:11.1978161Z [command]/usr/bin/git push --force ***github.com/Matheusmb3/BIMBO.git github-pages-deploy-action/98dnt12ox:gh-pages
+2026-03-31T14:44:21.2729768Z remote: 
+2026-03-31T14:44:21.2730463Z remote: Create a pull request for 'gh-pages' on GitHub by visiting:        
+2026-03-31T14:44:21.2731601Z remote:      https://github.com/Matheusmb3/BIMBO/pull/new/gh-pages        
+2026-03-31T14:44:21.2732350Z remote: 
+2026-03-31T14:44:21.2737593Z To https://github.com/Matheusmb3/BIMBO.git
+2026-03-31T14:44:21.2738438Z  * [new branch]      github-pages-deploy-action/98dnt12ox -> gh-pages
+2026-03-31T14:44:21.2779795Z Changes committed to the gh-pages branch… 📦
+2026-03-31T14:44:21.2780538Z Running post deployment cleanup jobs… 🗑️
+2026-03-31T14:44:21.2793575Z [command]/usr/bin/git checkout -B github-pages-deploy-action/98dnt12ox
+2026-03-31T14:44:21.2830673Z Reset branch 'github-pages-deploy-action/98dnt12ox'
+2026-03-31T14:44:21.2879740Z [command]/usr/bin/git worktree remove github-pages-deploy-action-temp-deployment-folder --force
+2026-03-31T14:44:21.2918046Z Completed deployment successfully! ✅
