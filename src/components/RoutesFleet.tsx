@@ -1,0 +1,146 @@
+import { MapPin, Truck, Users, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
+
+export function RoutesFleet() {
+  return (
+    <div className="p-8 max-w-7xl mx-auto space-y-8">
+      <div className="flex justify-between items-end">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight text-black">Rotas & Frota Flexível</h1>
+          <p className="text-gray-500 mt-2 text-lg">Gestão de parceiros logísticos e priorização de abastecimento.</p>
+        </div>
+        <button className="bg-black text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm">
+          Alocar Nova Frota
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Fleet Status */}
+        <div className="lg:col-span-2 bg-white rounded-[20px] shadow-sm border border-gray-100 p-6">
+          <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+            <Truck className="text-[#4E18FF]" /> Status da Frota
+          </h3>
+          
+          <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100">
+              <p className="text-sm text-gray-500 font-medium mb-1">Frota Própria</p>
+              <p className="text-2xl font-black">45 / 50</p>
+              <p className="text-xs text-green-600 font-bold mt-2 flex items-center gap-1"><CheckCircle2 size={12}/> Operando</p>
+            </div>
+            <div className="bg-orange-50 p-4 rounded-2xl border border-orange-100">
+              <p className="text-sm text-orange-800 font-medium mb-1">Parceiros Logísticos</p>
+              <p className="text-2xl font-black text-orange-900">12 / 30</p>
+              <p className="text-xs text-orange-600 font-bold mt-2 flex items-center gap-1"><Clock size={12}/> Em Standby</p>
+            </div>
+            <div className="bg-red-50 p-4 rounded-2xl border border-red-100">
+              <p className="text-sm text-red-800 font-medium mb-1">Veículos em Manutenção</p>
+              <p className="text-2xl font-black text-red-900">5</p>
+              <p className="text-xs text-red-600 font-bold mt-2 flex items-center gap-1"><AlertCircle size={12}/> Indisponível</p>
+            </div>
+          </div>
+
+          <h4 className="font-bold text-lg mb-4">Rotas Ativas (Priorização por Criticidade)</h4>
+          <div className="space-y-3">
+            <RouteItem 
+              id="RT-1042" 
+              driver="Carlos Silva" 
+              type="Própria" 
+              status="Em Rota" 
+              criticality="Alta" 
+              destinations={8} 
+              progress={65} 
+            />
+            <RouteItem 
+              id="RT-1043" 
+              driver="Logística Express (Parceiro)" 
+              type="Terceirizada" 
+              status="Carregando" 
+              criticality="Média" 
+              destinations={12} 
+              progress={10} 
+            />
+            <RouteItem 
+              id="RT-1044" 
+              driver="João Souza" 
+              type="Própria" 
+              status="Concluída" 
+              criticality="Baixa" 
+              destinations={5} 
+              progress={100} 
+            />
+          </div>
+        </div>
+
+        {/* Map Placeholder */}
+        <div className="bg-gray-100 rounded-[20px] border border-gray-200 overflow-hidden relative min-h-[400px]">
+          <div className="absolute inset-0 bg-[url('https://picsum.photos/seed/map/800/800?blur=2')] bg-cover bg-center opacity-50"></div>
+          
+          {/* Map Pins */}
+          <div className="absolute top-1/4 left-1/4">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#FF4F00] rounded-full animate-ping absolute"></div>
+              <div className="w-4 h-4 bg-[#FF4F00] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
+          </div>
+          <div className="absolute top-1/2 left-1/2">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#4E18FF] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
+          </div>
+          <div className="absolute bottom-1/3 right-1/4">
+            <div className="relative">
+              <div className="w-4 h-4 bg-[#3D7700] rounded-full relative border-2 border-white shadow-md"></div>
+            </div>
+          </div>
+
+          <div className="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/20">
+            <h4 className="font-bold text-sm mb-2 flex items-center gap-2"><MapPin size={16} className="text-[#FF4F00]" /> Visão Geográfica</h4>
+            <p className="text-xs text-gray-600 font-medium">Acompanhamento em tempo real da frota e pontos de ruptura iminente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RouteItem({ id, driver, type, status, criticality, destinations, progress }: any) {
+  const getCriticalityColor = () => {
+    if (criticality === 'Alta') return 'bg-red-100 text-red-800';
+    if (criticality === 'Média') return 'bg-orange-100 text-orange-800';
+    return 'bg-green-100 text-green-800';
+  };
+
+  return (
+    <div className="border border-gray-100 rounded-2xl p-4 hover:bg-gray-50 transition-colors">
+      <div className="flex justify-between items-center mb-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">
+            <Truck size={20} className={type === 'Própria' ? 'text-black' : 'text-[#4E18FF]'} />
+          </div>
+          <div>
+            <h5 className="font-bold text-sm">{id} • {driver}</h5>
+            <p className="text-xs text-gray-500 font-medium">{type} | {destinations} paradas</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${getCriticalityColor()}`}>
+            Prioridade {criticality}
+          </span>
+          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-gray-100 text-gray-600">
+            {status}
+          </span>
+        </div>
+      </div>
+      
+      <div className="w-full bg-gray-100 rounded-full h-1.5 mb-1">
+        <div 
+          className="bg-[#FF4F00] h-1.5 rounded-full transition-all duration-500" 
+          style={{ width: `${progress}%` }}
+        ></div>
+      </div>
+      <div className="flex justify-between text-[10px] font-bold text-gray-400">
+        <span>Progresso</span>
+        <span>{progress}%</span>
+      </div>
+    </div>
+  );
+}
