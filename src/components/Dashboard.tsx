@@ -584,7 +584,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Dashboards em Power BI e torre de controle logística',
       'Integração com ERP e CRM para consolidar demanda e abastecimento',
-      'Teams e e-mail para alertas e comunicação operacional',
+      'Alertas via push e e-mail para comunicação operacional',
     ],
   },
   {
