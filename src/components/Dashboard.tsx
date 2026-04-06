@@ -1,5 +1,5 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target } from 'lucide-react';
 
 const consumptionData = [
   { time: '08:00', paoForma: 120, bisnaguinha: 80, rap10: 40 },
@@ -178,6 +178,269 @@ function MetricCard({ title, value, trend, trendUp, icon: Icon, color, iconColor
       </div>
       <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
       <p className="text-3xl font-black tracking-tight">{value}</p>
+    </div>
+  );
+}
+
+type PresentationSlide = {
+  number: string;
+  eyebrow: string;
+  title: string;
+  subtitle?: string;
+  layout?: 'hero' | 'canvas' | 'compare' | 'closing';
+  bullets?: string[];
+};
+
+const canvasBlocks = [
+  { title: 'Segmentos de clientes', text: 'CDs, varejo, atacado e PDVs prioritários.', accent: 'bg-[#FF4F00]' },
+  { title: 'Proposta de valor', text: 'Abastecimento preditivo, menos ruptura e menos urgências.', accent: 'bg-[#4E18FF]' },
+  { title: 'Canais', text: 'Torre de controle, app, roteirização e integração ERP.', accent: 'bg-[#3D7700]' },
+  { title: 'Relacionamento', text: 'Resposta rápida, visibilidade e priorização por criticidade.', accent: 'bg-[#FECC14]' },
+  { title: 'Fontes de receita', text: 'Eficiência operacional, redução de perdas e melhor nível de serviço.', accent: 'bg-[#F577ED]' },
+  { title: 'Recursos principais', text: 'Dados em tempo real, frota, times integrados e analytics.', accent: 'bg-black' },
+  { title: 'Atividades-chave', text: 'Prever demanda, priorizar pedidos e otimizar rotas.', accent: 'bg-[#FF4F00]' },
+  { title: 'Parcerias', text: 'Transportadoras, tecnologia, CDs e canais comerciais.', accent: 'bg-[#4E18FF]' },
+  { title: 'Estrutura de custos', text: 'Frete emergencial, perdas por ruptura e ineficiência logística.', accent: 'bg-[#3D7700]' },
+];
+
+const presentationSlides: PresentationSlide[] = [
+  {
+    number: '01',
+    eyebrow: 'Capa',
+    title: 'Transformação da Logística: do modelo reativo para o preditivo',
+    subtitle: 'Otimização do abastecimento e eficiência operacional',
+    layout: 'hero',
+  },
+  {
+    number: '02',
+    eyebrow: 'Contexto e Problema',
+    title: 'O cenário atual combina urgência, baixa visibilidade e custo alto',
+    bullets: [
+      'Planejamento reativo e decisões tardias',
+      'Falta de integração entre áreas',
+      'Baixa visibilidade da operação',
+      'Frete emergencial pressionando a margem',
+    ],
+  },
+  {
+    number: '03',
+    eyebrow: 'Persona',
+    title: 'Mariana Souza, Coordenadora Administrativa',
+    bullets: [
+      'Precisa enxergar a operação em tempo real',
+      'Enfrenta dificuldade para alinhar áreas',
+      'Tem pressão constante por eficiência e resposta rápida',
+    ],
+  },
+  {
+    number: '04',
+    eyebrow: 'Insight Estratégico',
+    title: 'O problema central não é a logística, e sim a falta de previsibilidade',
+    bullets: [
+      'Dados dispersos geram decisões tardias',
+      'Integração limitada impede priorização correta',
+      'A operação reage ao problema em vez de antecipá-lo',
+    ],
+  },
+  {
+    number: '05',
+    eyebrow: 'Soluções Propostas',
+    title: 'Quatro alavancas para migrar do reativo ao preditivo',
+    bullets: [
+      'Torre de Controle Logística',
+      'Priorização por Criticidade',
+      'Frota Flexível em modelo híbrido',
+      'Previsão de demanda e roteirização inteligente',
+    ],
+  },
+  {
+    number: '06',
+    eyebrow: 'Conexão com SWOT',
+    title: 'As soluções atacam diretamente a fraqueza de requisições de última hora',
+    bullets: [
+      'Menos improviso e mais antecipação',
+      'Resposta estruturada às urgências',
+      'Redução da dependência de frete emergencial',
+    ],
+  },
+  {
+    number: '07',
+    eyebrow: 'Business Model Canvas',
+    title: 'Modelo resumido da proposta operacional',
+    layout: 'canvas',
+  },
+  {
+    number: '08',
+    eyebrow: 'Antes vs Depois',
+    title: 'A operação passa de reativa para orientada por dados',
+    layout: 'compare',
+  },
+  {
+    number: '09',
+    eyebrow: 'Impacto Esperado',
+    title: 'Resultados tangíveis em custo, serviço e desperdício',
+    bullets: [
+      'Redução de custos logísticos',
+      'Menos desperdício e ruptura',
+      'Maior eficiência operacional',
+      'Melhor nível de serviço ao cliente',
+    ],
+  },
+  {
+    number: '10',
+    eyebrow: 'Conclusão',
+    title: 'Transformação da operação por meio de dados e integração',
+    subtitle: 'A logística deixa de apagar incêndios e passa a antecipar a demanda.',
+    layout: 'closing',
+  },
+];
+
+export function PresentationDeck() {
+  return (
+    <div className="p-8 max-w-[1600px] mx-auto space-y-8">
+      <div className="flex justify-between items-end gap-6 flex-wrap">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Apresentação Executiva</p>
+          <h1 className="text-4xl font-bold tracking-tight text-black mt-2">Logística preditiva para o Grupo Bimbo</h1>
+          <p className="text-gray-500 mt-2 text-lg">Slides prontos para uma narrativa clara, objetiva e profissional.</p>
+        </div>
+        <div className="flex items-center gap-3 text-sm text-gray-500">
+          <div className="px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm">Estilo consultoria estratégica</div>
+          <div className="px-4 py-2 rounded-full bg-black text-white shadow-sm">10 slides</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {presentationSlides.map((slide) => (
+          <SlideCard slide={slide} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SlideCard({ slide }: { slide: PresentationSlide }) {
+  const base = 'bg-white rounded-[28px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden';
+
+  if (slide.layout === 'hero') {
+    return (
+      <section className={`${base} min-h-[420px] p-8 bg-[linear-gradient(135deg,#000000_0%,#111111_55%,#FF4F00_220%)] text-white flex flex-col justify-between`}>
+        <div className="flex justify-between items-start gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
+            <div className="mt-3 inline-flex items-center gap-2 text-xs px-3 py-1 rounded-full bg-white/10 border border-white/10">
+              <Sparkles size={14} />
+              Grupo Bimbo
+            </div>
+          </div>
+          <div className="w-14 h-14 rounded-2xl bg-white text-black flex items-center justify-center font-black text-2xl">B</div>
+        </div>
+
+        <div className="max-w-xl space-y-5">
+          <h2 className="text-4xl font-black leading-tight tracking-tight">{slide.title}</h2>
+          <p className="text-lg text-white/80">{slide.subtitle}</p>
+        </div>
+
+        <div className="flex items-center justify-between text-sm text-white/70">
+          <span>Modelo reativo vs preditivo</span>
+          <span className="inline-flex items-center gap-2 text-white font-medium"><ArrowRight size={16} /> Eficiência operacional</span>
+        </div>
+      </section>
+    );
+  }
+
+  if (slide.layout === 'canvas') {
+    return (
+      <section className={`${base} p-6 xl:col-span-2`}>
+        <SlideHeader slide={slide} />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {canvasBlocks.map((block) => (
+            <div key={block.title} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/80 min-h-[140px]">
+              <div className={`w-10 h-10 rounded-xl ${block.accent} text-white flex items-center justify-center font-bold mb-3`}>
+                <Boxes size={18} />
+              </div>
+              <h3 className="font-bold text-base leading-tight">{block.title}</h3>
+              <p className="text-sm text-gray-600 mt-2 leading-relaxed">{block.text}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  if (slide.layout === 'compare') {
+    return (
+      <section className={`${base} p-6 xl:col-span-2`}>
+        <SlideHeader slide={slide} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-2xl bg-red-50 border border-red-100 p-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600 text-white text-xs font-bold">REATIVO</div>
+            <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <Row icon={Clock3} text="Decisões tardias e urgências constantes" />
+              <Row icon={Network} text="Falta de dados integrados" />
+              <Row icon={Truck} text="Custos altos com frete emergencial" />
+            </div>
+          </div>
+          <div className="rounded-2xl bg-emerald-50 border border-emerald-100 p-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-bold">PREDITIVO</div>
+            <div className="mt-4 space-y-3 text-sm text-gray-700">
+              <Row icon={Target} text="Antecipação por demanda e criticidade" />
+              <Row icon={BarChart3} text="Dados em tempo real para decisão" />
+              <Row icon={ShieldCheck} text="Eficiência com melhor nível de serviço" />
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (slide.layout === 'closing') {
+    return (
+      <section className={`${base} min-h-[320px] p-8 bg-black text-white xl:col-span-2 flex flex-col justify-between`}>
+        <div>
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
+          <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+        </div>
+        <p className="text-lg text-white/75 max-w-2xl">{slide.subtitle}</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className={`${base} p-6`}>
+      <SlideHeader slide={slide} />
+      <ul className="space-y-3">
+        {slide.bullets?.map((bullet: string) => (
+          <li key={bullet} className="flex items-start gap-3 text-gray-700">
+            <span className="mt-2 h-2 w-2 rounded-full bg-[#FF4F00] shrink-0" />
+            <span className="text-base leading-relaxed">{bullet}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function SlideHeader({ slide }: { slide: any }) {
+  return (
+    <div className="mb-5 flex items-start justify-between gap-4">
+      <div>
+        <p className="text-xs uppercase tracking-[0.28em] text-[#FF4F00] font-bold">{slide.eyebrow}</p>
+        <h2 className="text-2xl font-black tracking-tight mt-2 text-black">{slide.title}</h2>
+      </div>
+      <div className="text-right shrink-0">
+        <div className="text-xs font-bold text-gray-400">Slide</div>
+        <div className="text-2xl font-black text-black">{slide.number}</div>
+      </div>
+    </div>
+  );
+}
+
+function Row({ icon: Icon, text }: { icon: any; text: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <Icon size={16} className="mt-1 text-gray-500 shrink-0" />
+      <p>{text}</p>
     </div>
   );
 }

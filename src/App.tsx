@@ -6,6 +6,7 @@
 import { useState } from 'react';
 import { Sidebar } from './components/Sidebar';
 import { Dashboard } from './components/Dashboard';
+import { PresentationDeck } from './components/Dashboard';
 import { POSApp } from './components/POSApp';
 import { RoutesFleet } from './components/RoutesFleet';
 import { AlertsPanel } from './components/AlertsPanel';
@@ -19,6 +20,7 @@ export default function App() {
       
       <main className="flex-1 ml-64 overflow-y-auto">
         {activeTab === 'dashboard' && <Dashboard />}
+        {activeTab === 'presentation' && <PresentationDeck />}
         {activeTab === 'pos-app' && <POSApp />}
         {activeTab === 'routes' && <RoutesFleet />}
         {activeTab === 'alerts' && <AlertsPanel />}
