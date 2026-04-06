@@ -188,7 +188,7 @@ type PresentationSlide = {
   eyebrow: string;
   title: string;
   subtitle?: string;
-  layout?: 'hero' | 'canvas' | 'compare' | 'closing';
+  layout?: 'hero' | 'flow' | 'canvas' | 'compare' | 'closing';
   bullets?: string[];
 };
 
@@ -266,18 +266,24 @@ const presentationSlides: PresentationSlide[] = [
   },
   {
     number: '07',
+    eyebrow: 'Como a solução funciona',
+    title: 'A operação integra dados e transforma sinais em decisão e ação',
+    layout: 'flow',
+  },
+  {
+    number: '08',
     eyebrow: 'Business Model Canvas',
     title: 'Canvas da solução logística preditiva',
     layout: 'canvas',
   },
   {
-    number: '08',
+    number: '09',
     eyebrow: 'Antes vs Depois',
     title: 'A operação passa de reativa para orientada por dados',
     layout: 'compare',
   },
   {
-    number: '09',
+    number: '10',
     eyebrow: 'Impacto Esperado',
     title: 'Resultados tangíveis em custo, serviço e desperdício',
     bullets: [
@@ -288,7 +294,7 @@ const presentationSlides: PresentationSlide[] = [
     ],
   },
   {
-    number: '10',
+    number: '11',
     eyebrow: 'Conclusão',
     title: 'Transformação da operação por meio de dados e integração',
     subtitle: 'A logística deixa de apagar incêndios e passa a antecipar a demanda.',
@@ -307,7 +313,7 @@ export function PresentationDeck() {
         </div>
         <div className="flex items-center gap-3 text-sm text-gray-500">
           <div className="px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm">Estilo consultoria estratégica</div>
-          <div className="px-4 py-2 rounded-full bg-black text-white shadow-sm">10 slides</div>
+          <div className="px-4 py-2 rounded-full bg-black text-white shadow-sm">{presentationSlides.length} slides</div>
         </div>
       </div>
 
@@ -372,6 +378,58 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
     );
   }
 
+  if (slide.layout === 'flow') {
+    return (
+      <section className={`${base} p-6 xl:col-span-2`}>
+        <SlideHeader slide={slide} />
+        <p className="text-sm text-gray-500 mb-5 max-w-3xl leading-relaxed">
+          Os dados circulam em tempo real, são consolidados na torre de controle e viram alertas, decisão e execução operacional.
+        </p>
+
+        <div className="rounded-[24px] bg-gray-50 border border-gray-100 p-5 overflow-x-auto">
+          <div className="min-w-[980px] flex items-center gap-3">
+            <FlowNode label="Vendas / PDV" tone="bg-[#FF4F00] text-white" />
+            <FlowArrow />
+            <FlowNode label="Estoque" tone="bg-white text-black border border-gray-200" />
+            <FlowArrow />
+            <FlowNode label="Logística" tone="bg-white text-black border border-gray-200" />
+            <FlowArrow />
+            <FlowNode label="Integração de dados" tone="bg-[#4E18FF] text-white" />
+            <FlowArrow />
+            <FlowNode label="Torre de controle" tone="bg-black text-white" />
+            <FlowArrow />
+            <FlowNode label="Alertas" tone="bg-white text-black border border-gray-200" />
+            <FlowArrow />
+            <FlowNode label="Decisão" tone="bg-white text-black border border-gray-200" />
+            <FlowArrow />
+            <FlowNode label="Ação operacional" tone="bg-[#3D7700] text-white" />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-5">
+          <div className="rounded-2xl bg-white border border-gray-100 p-5">
+            <h3 className="font-bold text-base mb-3">Como funciona</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">
+              Os dados são integrados em tempo real e convertidos em decisões operacionais automáticas ou assistidas pela equipe.
+            </p>
+          </div>
+          <div className="rounded-2xl bg-white border border-gray-100 p-5">
+            <h3 className="font-bold text-base mb-3">Exemplos de ação</h3>
+            <ul className="space-y-2 text-sm text-gray-700">
+              <li className="flex items-start gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-[#FF4F00] shrink-0" />Ruptura iminente → priorização de entrega</li>
+              <li className="flex items-start gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-[#FF4F00] shrink-0" />Atraso → replanejamento de rota</li>
+              <li className="flex items-start gap-3"><span className="mt-2 h-2 w-2 rounded-full bg-[#FF4F00] shrink-0" />Excesso → redistribuição ou ação comercial</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-2xl bg-black text-white p-5">
+          <p className="text-lg font-bold">A operação deixa de reagir e passa a antecipar.</p>
+        </div>
+      </section>
+    );
+  }
+
   if (slide.layout === 'compare') {
     return (
       <section className={`${base} p-6 xl:col-span-2`}>
@@ -423,6 +481,18 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
       </ul>
     </section>
   );
+}
+
+function FlowNode({ label, tone }: { label: string; tone: string }) {
+  return (
+    <div className={`px-4 py-3 rounded-2xl text-sm font-bold whitespace-nowrap ${tone}`}>
+      {label}
+    </div>
+  );
+}
+
+function FlowArrow() {
+  return <div className="text-2xl font-black text-gray-300 shrink-0">→</div>;
 }
 
 function SlideHeader({ slide }: { slide: any }) {
