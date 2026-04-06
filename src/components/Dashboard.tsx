@@ -1,5 +1,6 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target } from 'lucide-react';
+import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
+import type { ComponentType } from 'react';
 
 const consumptionData = [
   { time: '08:00', paoForma: 120, bisnaguinha: 80, rap10: 40 },
@@ -444,6 +445,192 @@ function Row({ icon: Icon, text }: { icon: any; text: string }) {
     <div className="flex items-start gap-3">
       <Icon size={16} className="mt-1 text-gray-500 shrink-0" />
       <p>{text}</p>
+    </div>
+  );
+}
+
+type ClassicCanvasBlock = {
+  title: string;
+  items: string[];
+  tone: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+};
+
+const classicCanvasBlocks: ClassicCanvasBlock[] = [
+  {
+    title: 'Parcerias Principais',
+    tone: 'bg-[#4E18FF] text-white',
+    icon: Users,
+    items: [
+      'Operadores logísticos para frota flexível',
+      'Fornecedores de tecnologia, dados e analytics',
+      'Fornecedores integrados com pedidos e visibilidade',
+    ],
+  },
+  {
+    title: 'Atividades-Chave',
+    tone: 'bg-white text-black border border-gray-200',
+    icon: BarChart3,
+    items: [
+      'Monitoramento em tempo real da operação',
+      'Priorização de abastecimento por criticidade',
+      'Previsão de demanda e roteirização inteligente',
+    ],
+  },
+  {
+    title: 'Recursos Principais',
+    tone: 'bg-[#3D7700] text-white',
+    icon: Boxes,
+    items: [
+      'Dados em tempo real da cadeia',
+      'Torre de controle logística e camada analítica',
+      'Integração entre demanda, pedidos e abastecimento',
+    ],
+  },
+  {
+    title: 'Relacionamento',
+    tone: 'bg-white text-black border border-gray-200',
+    icon: ShieldCheck,
+    items: [
+      'Gestão por alertas e criticidade',
+      'Resposta rápida a ocorrências de abastecimento',
+      'Comunicação integrada entre áreas internas',
+    ],
+  },
+  {
+    title: 'Proposta de Valor',
+    tone: 'bg-[linear-gradient(135deg,#000000_0%,#111111_55%,#FF4F00_220%)] text-white',
+    icon: Target,
+    items: [
+      'Abastecimento preditivo com dados em tempo real',
+      'Redução de ruptura, desperdício e decisões emergenciais',
+      'Maior disponibilidade de produto e nível de serviço',
+    ],
+  },
+  {
+    title: 'Canais',
+    tone: 'bg-white text-black border border-gray-200',
+    icon: Network,
+    items: [
+      'Torre de controle logística',
+      'Painéis operacionais para logística, comercial e planejamento',
+      'Integração com ERP, pedidos e roteirização inteligente',
+    ],
+  },
+  {
+    title: 'Segmentos de Clientes',
+    tone: 'bg-white text-black border border-gray-200',
+    icon: Users,
+    items: [
+      'Pontos de venda de alto giro',
+      'Centros de distribuição e unidades operacionais',
+      'Áreas internas: logística, comercial e planejamento',
+    ],
+  },
+  {
+    title: 'Estrutura de Custos',
+    tone: 'bg-white text-black border border-gray-200',
+    icon: Truck,
+    items: [
+      'Frete emergencial e replanejamentos de última hora',
+      'Perdas por ruptura e desperdício',
+      'Investimento em tecnologia, dados e torre de controle',
+    ],
+  },
+  {
+    title: 'Fontes de Receita',
+    tone: 'bg-[#F577ED] text-black',
+    icon: ArrowRight,
+    items: [
+      'Aumento de vendas pela menor ruptura',
+      'Maior disponibilidade de produtos no PDV',
+      'Preservação da receita via melhor nível de serviço',
+    ],
+  },
+];
+
+export function Canvas() {
+  return (
+    <div className="p-8 max-w-[1600px] mx-auto space-y-8">
+      <div className="flex justify-between items-end gap-6 flex-wrap">
+        <div>
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Business Model Canvas</p>
+          <h1 className="text-4xl font-bold tracking-tight text-black mt-2">Canvas da solução logística preditiva</h1>
+          <p className="text-gray-500 mt-2 text-lg max-w-3xl">
+            Estrutura clássica do modelo de negócio, conectando problema, proposta de valor, operação e impacto financeiro.
+          </p>
+        </div>
+        <div className="px-4 py-2 rounded-full bg-black text-white text-sm font-medium shadow-sm">
+          Modelo 3x3 executivo
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <CanvasCard block={classicCanvasBlocks[0]} />
+        <CanvasCard block={classicCanvasBlocks[1]} />
+        <CanvasCard block={classicCanvasBlocks[2]} />
+
+        <CanvasCard block={classicCanvasBlocks[3]} />
+        <div className="rounded-[28px] bg-white border border-gray-200 shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-6 flex flex-col justify-between min-h-[320px]">
+          <div>
+            <p className="text-xs uppercase tracking-[0.3em] text-[#FF4F00] font-bold">Centro do Canvas</p>
+            <div className="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black text-white text-xs font-semibold">
+              <Target size={14} />
+              Proposta de Valor
+            </div>
+            <h2 className="text-3xl font-black tracking-tight mt-4">Abastecimento preditivo com dados em tempo real</h2>
+            <p className="text-gray-600 mt-4 leading-relaxed">
+              Reduz ruptura, desperdício e decisões emergenciais ao antecipar a demanda e priorizar o abastecimento certo, no momento certo.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 text-sm">
+            <MiniMetric label="Ruptura" value="Menor" />
+            <MiniMetric label="Eficiência" value="Maior" />
+            <MiniMetric label="Serviço" value="Melhor" />
+          </div>
+        </div>
+        <CanvasCard block={classicCanvasBlocks[5]} />
+
+        <CanvasCard block={classicCanvasBlocks[6]} />
+        <CanvasCard block={classicCanvasBlocks[7]} />
+        <CanvasCard block={classicCanvasBlocks[8]} />
+      </div>
+    </div>
+  );
+}
+
+function CanvasCard({ block }: { block: ClassicCanvasBlock }) {
+  const Icon = block.icon;
+
+  return (
+    <section className={`rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] p-6 min-h-[320px] ${block.tone}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.28em] opacity-70 font-bold">Bloco</p>
+          <h2 className="text-2xl font-black tracking-tight mt-2 leading-tight">{block.title}</h2>
+        </div>
+        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${block.tone.includes('white') ? 'bg-black text-white' : 'bg-white text-black'}`}>
+          <Icon size={20} />
+        </div>
+      </div>
+
+      <ul className="mt-5 space-y-3 text-sm leading-relaxed">
+        {block.items.map((item) => (
+          <li key={item} className="flex items-start gap-3">
+            <span className={`mt-2 h-2 w-2 rounded-full ${block.tone.includes('white') ? 'bg-[#FF4F00]' : 'bg-current'} shrink-0`} />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function MiniMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-gray-50 p-3">
+      <p className="text-xs uppercase tracking-[0.2em] text-gray-500 font-bold">{label}</p>
+      <p className="text-base font-black text-black mt-1">{value}</p>
     </div>
   );
 }
