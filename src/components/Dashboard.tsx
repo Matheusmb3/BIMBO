@@ -532,9 +532,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#4E18FF] text-white',
     icon: Users,
     items: [
-      'Operadores logísticos para ampliar capacidade e flexibilidade de frota',
-      'Fornecedores de tecnologia, dados e analytics para sustentação da torre de controle',
-      'Fornecedores integrados de pedidos e visibilidade da cadeia',
+      'Operadores logísticos para frota flexível',
+      'Fornecedores de tecnologia, dados e analytics',
+      'Fornecedores com integração de pedidos',
     ],
   },
   {
@@ -552,9 +552,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#3D7700] text-white',
     icon: Boxes,
     items: [
-      'Base de dados centralizada e sistemas integrados',
-      'Dashboards operacionais para acompanhamento em tempo real',
-      'Frota própria e parceiros logísticos para execução híbrida',
+      'Sistemas de dados integrados',
+      'Base de dados centralizada',
+      'Dashboards e frota própria e de parceiros',
     ],
   },
   {
@@ -563,8 +563,8 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     icon: ShieldCheck,
     items: [
       'Suporte em tempo real para a operação interna',
-      'Decisão assistida por dados e alertas de exceção',
-      'Uso contínuo via dashboard operacional por Mariana e equipes',
+      'Tomada de decisão assistida por dados',
+      'Uso contínuo via dashboard operacional',
     ],
   },
   {
@@ -602,9 +602,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: Truck,
     items: [
-      'Frete emergencial e replanejamentos de última hora no cenário atual',
-      'Investimento em tecnologia, integração e analytics no cenário futuro',
-      'Custos operacionais e logísticos da torre de controle e frota híbrida',
+      'Frete emergencial no cenário atual',
+      'Investimento em tecnologia e integração',
+      'Custos operacionais e logísticos da solução',
     ],
   },
   {
@@ -612,9 +612,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#F577ED] text-black',
     icon: ArrowRight,
     items: [
-      'Aumento de vendas pela redução de ruptura nos PDVs',
-      'Maior disponibilidade de produtos e preservação da receita',
-      'Impacto financeiro direto via melhor nível de serviço',
+      'Aumento de vendas pela redução de ruptura',
+      'Maior disponibilidade de produtos nos PDVs',
+      'Impacto direto na receita',
     ],
   },
 ];
