@@ -532,9 +532,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#4E18FF] text-white',
     icon: Users,
     items: [
-      'Operadores logísticos para frota flexível',
-      'Fornecedores de tecnologia, dados e analytics',
-      'Fornecedores integrados com pedidos e visibilidade',
+      'Operadores logísticos para ampliar capacidade e flexibilidade de frota',
+      'Fornecedores de tecnologia, dados e analytics para sustentação da torre de controle',
+      'Fornecedores integrados de pedidos e visibilidade da cadeia',
     ],
   },
   {
@@ -542,9 +542,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: BarChart3,
     items: [
-      'Monitoramento em tempo real da operação',
-      'Priorização de abastecimento por criticidade',
-      'Previsão de demanda e roteirização inteligente',
+      'Integração de dados entre áreas e sistemas',
+      'Monitoramento em tempo real pela torre de controle',
+      'Previsão de demanda, priorização e roteirização inteligente',
     ],
   },
   {
@@ -552,9 +552,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#3D7700] text-white',
     icon: Boxes,
     items: [
-      'Dados em tempo real da cadeia',
-      'Torre de controle logística e camada analítica',
-      'Integração entre demanda, pedidos e abastecimento',
+      'Base de dados centralizada e sistemas integrados',
+      'Dashboards operacionais para acompanhamento em tempo real',
+      'Frota própria e parceiros logísticos para execução híbrida',
     ],
   },
   {
@@ -562,9 +562,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: ShieldCheck,
     items: [
-      'Gestão por alertas e criticidade',
-      'Resposta rápida a ocorrências de abastecimento',
-      'Comunicação integrada entre áreas internas',
+      'Suporte em tempo real para a operação interna',
+      'Decisão assistida por dados e alertas de exceção',
+      'Uso contínuo via dashboard operacional por Mariana e equipes',
     ],
   },
   {
@@ -572,9 +572,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[linear-gradient(135deg,#000000_0%,#111111_55%,#FF4F00_220%)] text-white',
     icon: Target,
     items: [
-      'Abastecimento preditivo com dados em tempo real',
+      'Abastecimento preditivo com dados em tempo real e gestão de exceções',
       'Redução de ruptura, desperdício e decisões emergenciais',
-      'Maior disponibilidade de produto e nível de serviço',
+      'Antecipação de problemas com maior disponibilidade nos PDVs',
     ],
   },
   {
@@ -582,9 +582,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: Network,
     items: [
-      'Torre de controle logística',
-      'Painéis operacionais para logística, comercial e planejamento',
-      'Integração com ERP, pedidos e roteirização inteligente',
+      'Dashboards em Power BI e torre de controle logística',
+      'Integração com ERP e CRM para consolidar demanda e abastecimento',
+      'Teams e e-mail para alertas e comunicação operacional',
     ],
   },
   {
@@ -592,9 +592,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: Users,
     items: [
-      'Pontos de venda de alto giro',
-      'Centros de distribuição e unidades operacionais',
-      'Áreas internas: logística, comercial e planejamento',
+      'Pontos de venda de alto giro com risco recorrente de ruptura',
+      'Centros de distribuição e unidades de apoio logístico',
+      'Áreas internas de logística, comercial e planejamento',
     ],
   },
   {
@@ -602,9 +602,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-white text-black border border-gray-200',
     icon: Truck,
     items: [
-      'Frete emergencial e replanejamentos de última hora',
-      'Perdas por ruptura e desperdício',
-      'Investimento em tecnologia, dados e torre de controle',
+      'Frete emergencial e replanejamentos de última hora no cenário atual',
+      'Investimento em tecnologia, integração e analytics no cenário futuro',
+      'Custos operacionais e logísticos da torre de controle e frota híbrida',
     ],
   },
   {
@@ -612,9 +612,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[#F577ED] text-black',
     icon: ArrowRight,
     items: [
-      'Aumento de vendas pela menor ruptura',
-      'Maior disponibilidade de produtos no PDV',
-      'Preservação da receita via melhor nível de serviço',
+      'Aumento de vendas pela redução de ruptura nos PDVs',
+      'Maior disponibilidade de produtos e preservação da receita',
+      'Impacto financeiro direto via melhor nível de serviço',
     ],
   },
 ];
@@ -650,7 +650,7 @@ export function Canvas() {
             </div>
             <h2 className="text-3xl font-black tracking-tight mt-4">Abastecimento preditivo com dados em tempo real</h2>
             <p className="text-gray-600 mt-4 leading-relaxed">
-              Reduz ruptura, desperdício e decisões emergenciais ao antecipar a demanda e priorizar o abastecimento certo, no momento certo.
+              A solução conecta dados, previsão e execução para antecipar rupturas, reduzir desperdícios e transformar exceções em ação operacional.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 text-sm">
