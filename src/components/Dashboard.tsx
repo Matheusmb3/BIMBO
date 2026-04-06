@@ -192,15 +192,15 @@ type PresentationSlide = {
 };
 
 const canvasBlocks = [
-  { title: 'Segmentos de clientes', text: 'CDs, varejo, atacado e PDVs prioritários.', accent: 'bg-[#FF4F00]' },
-  { title: 'Proposta de valor', text: 'Abastecimento preditivo, menos ruptura e menos urgências.', accent: 'bg-[#4E18FF]' },
-  { title: 'Canais', text: 'Torre de controle, app, roteirização e integração ERP.', accent: 'bg-[#3D7700]' },
-  { title: 'Relacionamento', text: 'Resposta rápida, visibilidade e priorização por criticidade.', accent: 'bg-[#FECC14]' },
-  { title: 'Fontes de receita', text: 'Eficiência operacional, redução de perdas e melhor nível de serviço.', accent: 'bg-[#F577ED]' },
-  { title: 'Recursos principais', text: 'Dados em tempo real, frota, times integrados e analytics.', accent: 'bg-black' },
-  { title: 'Atividades-chave', text: 'Prever demanda, priorizar pedidos e otimizar rotas.', accent: 'bg-[#FF4F00]' },
-  { title: 'Parcerias', text: 'Transportadoras, tecnologia, CDs e canais comerciais.', accent: 'bg-[#4E18FF]' },
-  { title: 'Estrutura de custos', text: 'Frete emergencial, perdas por ruptura e ineficiência logística.', accent: 'bg-[#3D7700]' },
+  { title: 'Segmentos de clientes', text: 'Pontos de venda de alto giro, centros de distribuição e áreas internas de logística, comercial e planejamento.', accent: 'bg-[#FF4F00]' },
+  { title: 'Proposta de valor', text: 'Abastecimento preditivo com dados em tempo real, redução de ruptura e de desperdício, e eliminação de decisões emergenciais.', accent: 'bg-[#4E18FF]' },
+  { title: 'Canais', text: 'Torre de controle logística, integração com ERP e pedidos, painéis operacionais e roteirização inteligente.', accent: 'bg-[#3D7700]' },
+  { title: 'Relacionamento', text: 'Gestão por alertas de criticidade, resposta rápida a ocorrências e comunicação integrada entre as áreas.', accent: 'bg-[#FECC14]' },
+  { title: 'Fontes de receita', text: 'Aumento de vendas pela menor ruptura, maior disponibilidade de produto e preservação da receita por melhor nível de serviço.', accent: 'bg-[#F577ED]' },
+  { title: 'Recursos principais', text: 'Dados em tempo real, torre de controle, analytics, frota flexível e integração entre demanda e abastecimento.', accent: 'bg-black' },
+  { title: 'Atividades-chave', text: 'Monitoramento em tempo real, priorização de abastecimento, previsão de demanda e roteirização inteligente.', accent: 'bg-[#FF4F00]' },
+  { title: 'Parcerias', text: 'Operadores logísticos, fornecedores de tecnologia e fornecedores integrados de pedidos e visibilidade.', accent: 'bg-[#4E18FF]' },
+  { title: 'Estrutura de custos', text: 'Frete emergencial, perdas por ruptura e desperdício no cenário atual; investimento em tecnologia, dados e torre de controle no cenário futuro.', accent: 'bg-[#3D7700]' },
 ];
 
 const presentationSlides: PresentationSlide[] = [
@@ -266,7 +266,7 @@ const presentationSlides: PresentationSlide[] = [
   {
     number: '07',
     eyebrow: 'Business Model Canvas',
-    title: 'Modelo resumido da proposta operacional',
+    title: 'Canvas da solução logística preditiva',
     layout: 'canvas',
   },
   {
@@ -353,6 +353,9 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
     return (
       <section className={`${base} p-6 xl:col-span-2`}>
         <SlideHeader slide={slide} />
+        <p className="text-sm text-gray-500 mb-5 max-w-3xl leading-relaxed">
+          O Canvas conecta o problema de ruptura e frete emergencial com a proposta de valor, as atividades operacionais e a geração de receita.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {canvasBlocks.map((block) => (
             <div key={block.title} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/80 min-h-[140px]">
