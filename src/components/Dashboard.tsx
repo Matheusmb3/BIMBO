@@ -1,6 +1,7 @@
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
 import type { ComponentType } from 'react';
+import jsPDF from 'jspdf';
 
 const consumptionData = [
   { time: '08:00', paoForma: 120, bisnaguinha: 80, rap10: 40 },
@@ -20,6 +21,121 @@ const regionData = [
 ];
 
 export function Dashboard() {
+  const handleExportReport = () => {
+    const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 16;
+    const contentWidth = pageWidth - margin * 2;
+
+    const addSectionTitle = (title: string, y: number) => {
+      doc.setFillColor(255, 79, 0);
+      doc.roundedRect(margin, y, 42, 8, 2, 2, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9);
+      doc.text(title.toUpperCase(), margin + 3, y + 5.5);
+      doc.setTextColor(0, 0, 0);
+    };
+
+    const addWrappedText = (text: string, x: number, y: number, width: number, fontSize = 10) => {
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(fontSize);
+      const lines = doc.splitTextToSize(text, width);
+      doc.text(lines, x, y);
+      return y + lines.length * (fontSize * 0.5 + 2);
+    };
+
+    const addMetricBox = (x: number, y: number, w: number, h: number, label: string, value: string, detail: string) => {
+      doc.setDrawColor(230, 230, 230);
+      doc.setFillColor(250, 250, 250);
+      doc.roundedRect(x, y, w, h, 3, 3, 'FD');
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8);
+      doc.setTextColor(120, 120, 120);
+      doc.text(label, x + 4, y + 6);
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(16);
+      doc.text(value, x + 4, y + 15);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(90, 90, 90);
+      doc.text(detail, x + 4, y + 21);
+    };
+
+    doc.setFillColor(0, 0, 0);
+    doc.rect(0, 0, pageWidth, 34, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(20);
+    doc.text('Torre de Controle Logística', margin, 14);
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Relatório fictício de visão geral da operação', margin, 22);
+    doc.setFontSize(9);
+    doc.text('Período de referência: 06/04/2026 | Status: consolidado para diretoria', margin, 29);
+
+    let y = 44;
+    addSectionTitle('Resumo Executivo', y);
+    y += 14;
+    y = addWrappedText(
+      'A operação mantém boa eficiência global, mas ainda apresenta risco concentrado de ruptura em pontos de venda da Zona Sul e Zona Leste. A priorização por criticidade e a redistribuição de frota permanecem como alavancas principais para reduzir perdas e estabilizar o nível de serviço.',
+      margin,
+      y,
+      contentWidth,
+      10,
+    ) + 4;
+
+    addSectionTitle('Indicadores-Chave', y);
+    y += 12;
+    const boxW = (contentWidth - 8) / 2;
+    addMetricBox(margin, y, boxW, 28, 'Entregas em andamento', '142', '+12% vs. período anterior');
+    addMetricBox(margin + boxW + 8, y, boxW, 28, 'Eficiência da frota', '94%', '+2% de melhoria');
+    y += 34;
+    addMetricBox(margin, y, boxW, 28, 'Risco de ruptura', '28', '-5% no acumulado');
+    addMetricBox(margin + boxW + 8, y, boxW, 28, 'Volume entregue', '18.5 ton', '+8% de crescimento');
+    y += 38;
+
+    addSectionTitle('Leitura Operacional', y);
+    y += 13;
+    y = addWrappedText(
+      'Consumo em alta nos principais produtos, abastecimento equilibrado no Centro e na Zona Norte, e necessidade de intervenção imediata em pontos com cobertura inferior a 80%. O painel recomenda redirecionamento de rotas, acionamento da frota flexível e notificação dos centros de distribuição mais próximos.',
+      margin,
+      y,
+      contentWidth,
+      10,
+    ) + 4;
+
+    addSectionTitle('Alertas Críticos', y);
+    y += 12;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    const alerts = [
+      ['Supermercado Silva', 'Zona Sul', 'Pão de Forma Tradicional', '2 unid. | 2h restantes', 'Redirecionar Rota 12'],
+      ['Mercadinho Dois Irmãos', 'Zona Leste', 'Bisnaguinha', '5 unid. | 4h restantes', 'Acionar Frota Flex'],
+      ['Padaria Central', 'Centro', 'Rap10 Integral', '12 unid. | 1 dia', 'Notificar CD Próximo'],
+    ];
+    const colWidths = [42, 28, 42, 34, 40];
+    const starts = [margin, margin + 42, margin + 70, margin + 112, margin + 146];
+    doc.setFillColor(245, 245, 245);
+    doc.rect(margin, y, contentWidth, 8, 'F');
+    ['PDV', 'Região', 'Produto', 'Estoque', 'Ação'].forEach((header, idx) => doc.text(header, starts[idx] + 2, y + 5.5));
+    y += 10;
+    doc.setFont('helvetica', 'normal');
+    alerts.forEach((row, rowIndex) => {
+      const rowY = y + rowIndex * 10;
+      if (rowIndex % 2 === 0) {
+        doc.setFillColor(250, 250, 250);
+        doc.rect(margin, rowY - 3, contentWidth, 9, 'F');
+      }
+      row.forEach((cell, idx) => {
+        const text = doc.splitTextToSize(String(cell), colWidths[idx] - 4);
+        doc.text(text, starts[idx] + 2, rowY + 3);
+      });
+    });
+
+    doc.save('torre-de-controle-relatorio.pdf');
+  };
+
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex justify-between items-end">
@@ -28,7 +144,7 @@ export function Dashboard() {
           <p className="text-gray-500 mt-2 text-lg">Monitoramento em tempo real de estoques, rotas e entregas.</p>
         </div>
         <div className="flex gap-3">
-          <button className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
+          <button onClick={handleExportReport} className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
             Exportar Relatório
           </button>
           <button className="bg-[#FF4F00] text-black px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#e64700] transition-colors shadow-[0_4px_14px_0_rgba(255,79,0,0.39)]">

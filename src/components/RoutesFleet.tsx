@@ -1,8 +1,41 @@
 import { MapPin, Truck, Users, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import * as XLSX from 'xlsx';
 
 export function RoutesFleet() {
+  const handleExportReport = () => {
+    const workbook = XLSX.utils.book_new();
+
+    const summarySheet = XLSX.utils.aoa_to_sheet([
+      ['Relatório Fictício - Rotas & Frota'],
+      ['Data de geração', '06/04/2026'],
+      ['Status geral', 'Operação estável com prioridade em rotas críticas'],
+      ['Frota própria', '45 / 50'],
+      ['Parceiros logísticos', '12 / 30'],
+      ['Veículos em manutenção', '5'],
+      ['Observação', 'Foco em criticidade alta e média para evitar ruptura'],
+    ]);
+
+    const routesSheet = XLSX.utils.json_to_sheet([
+      { id: 'RT-1042', motorista: 'Carlos Silva', tipo: 'Própria', status: 'Em Rota', criticidade: 'Alta', paradas: 8, progresso: '65%' },
+      { id: 'RT-1043', motorista: 'Logística Express (Parceiro)', tipo: 'Terceirizada', status: 'Carregando', criticidade: 'Média', paradas: 12, progresso: '10%' },
+      { id: 'RT-1044', motorista: 'João Souza', tipo: 'Própria', status: 'Concluída', criticidade: 'Baixa', paradas: 5, progresso: '100%' },
+    ]);
+
+    const alertsSheet = XLSX.utils.json_to_sheet([
+      { pdv: 'Supermercado Silva', regiao: 'Zona Sul', produto: 'Pão de Forma Tradicional', estoque: '2 unid. (2h restantes)', acao: 'Redirecionar Rota 12' },
+      { pdv: 'Mercadinho Dois Irmãos', regiao: 'Zona Leste', produto: 'Bisnaguinha', estoque: '5 unid. (4h restantes)', acao: 'Acionar Frota Flex' },
+      { pdv: 'Padaria Central', regiao: 'Centro', produto: 'Rap10 Integral', estoque: '12 unid. (1 dia)', acao: 'Notificar CD Próximo' },
+    ]);
+
+    XLSX.utils.book_append_sheet(workbook, summarySheet, 'Resumo');
+    XLSX.utils.book_append_sheet(workbook, routesSheet, 'Rotas');
+    XLSX.utils.book_append_sheet(workbook, alertsSheet, 'Alertas');
+
+    XLSX.writeFile(workbook, 'rotas-frota-relatorio.xlsx');
+  };
+
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex justify-between items-end">
@@ -10,9 +43,14 @@ export function RoutesFleet() {
           <h1 className="text-4xl font-bold tracking-tight text-black">Rotas & Frota Flexível</h1>
           <p className="text-gray-500 mt-2 text-lg">Gestão de parceiros logísticos e priorização de abastecimento.</p>
         </div>
-        <button className="bg-black text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm">
-          Alocar Nova Frota
-        </button>
+        <div className="flex gap-3">
+          <button onClick={handleExportReport} className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
+            Exportar Relatório
+          </button>
+          <button className="bg-black text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm">
+            Alocar Nova Frota
+          </button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
