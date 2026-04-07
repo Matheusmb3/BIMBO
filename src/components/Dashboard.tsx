@@ -582,8 +582,16 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
     return (
       <section className={`${base} min-h-[320px] p-8 bg-black text-white xl:col-span-2 flex flex-col justify-between`}>
         <div>
-          <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
-          <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
+              <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+            </div>
+            <div className="text-right shrink-0">
+              <div className="text-xs font-bold text-white/50">Slide</div>
+              <div className="text-2xl font-black text-white">{slide.number}</div>
+            </div>
+          </div>
           <div className="mt-6 space-y-4 max-w-3xl text-sm text-white/78 leading-relaxed">
             {slide.paragraphs?.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
