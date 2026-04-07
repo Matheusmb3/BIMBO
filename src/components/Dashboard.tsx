@@ -306,6 +306,7 @@ type PresentationSlide = {
   subtitle?: string;
   layout?: 'hero' | 'flow' | 'canvas' | 'compare' | 'closing';
   bullets?: string[];
+  paragraphs?: string[];
 };
 
 const canvasBlocks = [
@@ -412,8 +413,13 @@ const presentationSlides: PresentationSlide[] = [
   {
     number: '11',
     eyebrow: 'Conclusão',
-    title: 'Transformação da operação por meio de dados e integração',
-    subtitle: 'A logística deixa de apagar incêndios e passa a antecipar a demanda.',
+    title: 'A logística deixa de reagir e passa a antecipar',
+    paragraphs: [
+      'Os desafios centrais estão na baixa integração, na pouca visibilidade e na falta de previsibilidade que limitam a decisão da Mariana.',
+      'A solução migra a operação para um modelo preditivo, com dados em tempo real, torre de controle e gestão ativa de exceções.',
+      'O resultado é menos custo, menos ruptura, menos desperdício e mais eficiência com melhor nível de serviço.',
+    ],
+    subtitle: 'A logística deixa de reagir ao problema e passa a antecipar o futuro.',
     layout: 'closing',
   },
 ];
@@ -578,8 +584,13 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
         <div>
           <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
           <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+          <div className="mt-6 space-y-4 max-w-3xl text-sm text-white/78 leading-relaxed">
+            {slide.paragraphs?.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         </div>
-        <p className="text-lg text-white/75 max-w-2xl">{slide.subtitle}</p>
+        <p className="text-lg font-semibold text-white max-w-2xl">{slide.subtitle}</p>
       </section>
     );
   }
@@ -650,7 +661,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Operadores logísticos para frota flexível',
       'Fornecedores de tecnologia, dados e analytics',
-      'Fornecedores com integração de pedidos',
+      'Fornecedores com integração de pedidos e visibilidade da cadeia',
     ],
   },
   {
@@ -660,7 +671,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Integração de dados entre áreas e sistemas',
       'Monitoramento em tempo real pela torre de controle',
-      'Previsão de demanda, priorização e roteirização inteligente',
+      'Análise de KPIs, previsão de demanda e gestão de exceções',
     ],
   },
   {
@@ -669,8 +680,8 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     icon: Boxes,
     items: [
       'Sistemas de dados integrados',
-      'Base de dados centralizada',
-      'Dashboards e frota própria e de parceiros',
+      'Base de dados centralizada e sistemas de BI',
+      'Dashboards operacionais e frota própria e de parceiros',
     ],
   },
   {
@@ -679,8 +690,8 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     icon: ShieldCheck,
     items: [
       'Suporte em tempo real para a operação interna',
-      'Tomada de decisão assistida por dados',
-      'Uso contínuo via dashboard operacional',
+      'Alertas automatizados e tomada de decisão assistida por dados',
+      'Uso contínuo via dashboard com acompanhamento de KPIs',
     ],
   },
   {
@@ -688,9 +699,9 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     tone: 'bg-[linear-gradient(135deg,#000000_0%,#111111_55%,#FF4F00_220%)] text-white',
     icon: Target,
     items: [
-      'Abastecimento preditivo com dados em tempo real e gestão de exceções',
+      'Visibilidade em tempo real para a Mariana decidir com segurança',
       'Redução de ruptura, desperdício e decisões emergenciais',
-      'Antecipação de problemas com maior disponibilidade nos PDVs',
+      'Melhora do nível de serviço, da taxa de ruptura e da eficiência logística',
     ],
   },
   {
@@ -700,7 +711,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Dashboards em Power BI e torre de controle logística',
       'Integração com ERP e CRM para consolidar demanda e abastecimento',
-      'Alertas via push e e-mail para comunicação operacional',
+      'Alertas via push e e-mail com acesso a KPIs em tempo real',
     ],
   },
   {
@@ -710,7 +721,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Pontos de venda de alto giro com risco recorrente de ruptura',
       'Centros de distribuição e unidades de apoio logístico',
-      'Áreas internas de logística, comercial e planejamento',
+      'Áreas internas de logística, comercial e planejamento, com Mariana como usuária decisora',
     ],
   },
   {
@@ -720,7 +731,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Frete emergencial no cenário atual',
       'Investimento em tecnologia e integração',
-      'Custos operacionais e logísticos da solução',
+      'Custos operacionais e logísticos da solução com foco em redução futura',
     ],
   },
   {
@@ -730,7 +741,7 @@ const classicCanvasBlocks: ClassicCanvasBlock[] = [
     items: [
       'Aumento de vendas pela redução de ruptura',
       'Maior disponibilidade de produtos nos PDVs',
-      'Impacto direto na receita',
+      'Impacto direto na receita e redução de perdas operacionais',
     ],
   },
 ];
@@ -743,7 +754,7 @@ export function Canvas() {
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Business Model Canvas</p>
           <h1 className="text-4xl font-bold tracking-tight text-black mt-2">Canvas da solução logística preditiva</h1>
           <p className="text-gray-500 mt-2 text-lg max-w-3xl">
-            Estrutura clássica do modelo de negócio, conectando problema, proposta de valor, operação e impacto financeiro.
+            Canvas centrado na Mariana Souza, com foco em KPIs, visibilidade operacional e tomada de decisão orientada por dados.
           </p>
         </div>
         <div className="px-4 py-2 rounded-full bg-black text-white text-sm font-medium shadow-sm">
