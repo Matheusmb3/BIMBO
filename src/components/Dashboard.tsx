@@ -261,11 +261,14 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto space-y-8">
+    <div className="p-8 max-w-[1480px] mx-auto space-y-6">
       <div className="flex justify-between items-end gap-6 flex-wrap">
         <div>
-          <h1 className="text-4xl font-bold tracking-tight text-black">Visão Geral da Operação</h1>
-          <p className="text-gray-500 mt-2 text-lg max-w-3xl">Painel central de monitoramento da operação logística, permitindo identificar desvios, antecipar riscos e apoiar decisões em tempo real.</p>
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black text-white text-xs font-bold uppercase tracking-[0.28em] mb-4">
+            Torre de controle executiva
+          </div>
+          <h1 className="text-4xl font-black tracking-tight text-black">Visão Geral da Operação</h1>
+          <p className="text-gray-500 mt-2 text-lg max-w-2xl">Monitoramento, decisão e execução em uma única leitura.</p>
         </div>
         <div className="flex flex-col items-end gap-3">
           <div className="px-4 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-wider text-gray-500 shadow-sm">
@@ -282,12 +285,28 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </div>
 
-      <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-5">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+        {[
+          ['Visualizar', 'KPIs e status geral'],
+          ['Entender', 'Gráficos e tendências'],
+          ['Decidir', 'Ações recomendadas'],
+          ['Agir', 'Fila de prioridades'],
+          ['Validar', 'Alertas e insights'],
+        ].map(([title, subtitle], index) => (
+          <div key={title} className={`rounded-2xl border p-4 ${index === 0 ? 'bg-black text-white border-black' : 'bg-white border-gray-100'}`}>
+            <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${index === 0 ? 'text-white/60' : 'text-gray-400'}`}>{String(index + 1).padStart(2, '0')}</p>
+            <h3 className="mt-2 font-black text-base">{title}</h3>
+            <p className={`text-sm mt-1 leading-tight ${index === 0 ? 'text-white/75' : 'text-gray-500'}`}>{subtitle}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Leitura executiva</p>
             <h2 className="text-2xl font-black tracking-tight mt-2">O que a operação está dizendo agora</h2>
-            <p className="text-gray-500 mt-2 max-w-3xl">A torre não apenas mostra dados: ela interpreta o cenário, define prioridade e aponta a melhor ação para reduzir ruptura e preservar o nível de serviço.</p>
+            <p className="text-gray-500 mt-2 max-w-2xl">Interpretação curta para abrir a apresentação: onde está o risco, o que fazer e o que muda na operação.</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
             {predictiveSignals.map((signal) => (
@@ -307,8 +326,13 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100">
-          <h3 className="text-xl font-bold mb-2">Evolução de consumo</h3>
-          <p className="text-sm text-gray-500 mb-5">Tendência de crescimento de demanda ao longo do dia, útil para antecipar consumo e ruptura.</p>
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <h3 className="text-xl font-bold">Evolução de consumo</h3>
+              <p className="text-sm text-gray-500 mt-1">Tendência de crescimento de demanda ao longo do dia.</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-yellow-100 text-yellow-800">Entendimento</span>
+          </div>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={consumptionData}>
@@ -326,8 +350,13 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
 
         <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100">
-          <h3 className="text-xl font-bold mb-2">Status por região</h3>
-          <p className="text-sm text-gray-500 mb-5">Cobertura e risco por área, destacando onde a operação está mais sensível.</p>
+          <div className="flex items-start justify-between gap-3 mb-2">
+            <div>
+              <h3 className="text-xl font-bold">Status por região</h3>
+              <p className="text-sm text-gray-500 mt-1">Cobertura e risco para localizar os pontos sensíveis.</p>
+            </div>
+            <span className="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-yellow-100 text-yellow-800">Entendimento</span>
+          </div>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regionData} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
@@ -373,11 +402,11 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
-          <div className="flex items-center justify-between gap-3 mb-4">
-            <h3 className="text-lg font-bold">Fila de prioridades</h3>
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Alta / Média / Baixa</span>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="text-lg font-bold">Fila de prioridades</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Alta / Média / Baixa</span>
           </div>
           <div className="space-y-3">
             {rankedRegions.slice(0, 3).map((region, index) => {
@@ -406,9 +435,9 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
           </div>
         </div>
 
-        <div className="rounded-[20px] border border-gray-100 bg-white p-5">
-          <h3 className="text-lg font-bold mb-4">Tabela detalhada de alertas</h3>
-          <p className="text-sm text-gray-500 mb-4">Detalhe operacional para validar as decisões e acionar a execução rapidamente.</p>
+          <div className="rounded-[20px] border border-gray-100 bg-white p-5">
+            <h3 className="text-lg font-bold mb-4">Tabela detalhada de alertas</h3>
+            <p className="text-sm text-gray-500 mb-4">Detalhe operacional para validar as decisões e acionar a execução rapidamente.</p>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>
