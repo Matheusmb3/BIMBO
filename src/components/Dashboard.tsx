@@ -1,6 +1,6 @@
-import { useEffect, type ComponentType } from 'react';
+import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, Route, PackageCheck, LineChart as LineChartIcon } from 'lucide-react';
+import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2 } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 const consumptionData = [
@@ -43,6 +43,21 @@ const predictiveSignals = [
   { label: 'Risco de ruptura', value: 'em 4h', tone: 'critical' },
   { label: 'Demanda', value: '+12% em 3h', tone: 'attention' },
   { label: 'Estoque', value: 'tendência de queda', tone: 'normal' },
+];
+
+type NavigationStep = {
+  id: string;
+  label: string;
+  title: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+};
+
+const navigationSteps: NavigationStep[] = [
+  { id: 'kpis', label: 'Visualizar', title: 'Visão geral da operação', icon: Eye },
+  { id: 'graficos', label: 'Entender', title: 'Análise de tendências', icon: BarChart3 },
+  { id: 'acoes', label: 'Decidir', title: 'Ações recomendadas', icon: Brain },
+  { id: 'prioridades', label: 'Agir', title: 'Execução priorizada', icon: Zap },
+  { id: 'insights', label: 'Validar', title: 'Monitoramento e insights', icon: CheckCircle2 },
 ];
 
 const lastUpdatedLabel = 'há 8 min';
@@ -93,7 +108,7 @@ const recommendations: RecommendationItem[] = [
     detail: 'Atualizar leitura de consumo para evitar reação tardia.',
     impact: '↑ acurácia da previsão',
     targetTab: 'dashboard',
-    section: 'insights-section',
+    section: 'insights',
     icon: LineChartIcon,
   },
 ];
@@ -140,10 +155,62 @@ const decisionRules = [
 ];
 
 export function Dashboard({ focusAction, onAction }: DashboardProps) {
+  const [activeSection, setActiveSection] = useState('kpis');
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  const activeStepIndex = useMemo(() => navigationSteps.findIndex((step) => step.id === activeSection), [activeSection]);
+
   useEffect(() => {
     if (focusAction?.tab !== 'dashboard' || !focusAction.section) return;
+    setActiveSection(focusAction.section);
     document.getElementById(focusAction.section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, [focusAction]);
+
+  useEffect(() => {
+    const sections = navigationSteps
+      .map((step) => document.getElementById(step.id))
+      .filter((section): section is HTMLElement => Boolean(section));
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (visible?.target.id) {
+          setActiveSection(visible.target.id);
+        }
+      },
+      {
+        root: null,
+        rootMargin: '-15% 0px -60% 0px',
+        threshold: [0.15, 0.3, 0.5, 0.7],
+      },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 420);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const goToSection = (id: string) => {
+    setActiveSection(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const goToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setActiveSection('kpis');
+  };
 
   const handleExportReport = () => {
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -285,23 +352,47 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
-        {[
-          ['Visualizar', 'KPIs e status geral'],
-          ['Entender', 'Gráficos e tendências'],
-          ['Decidir', 'Ações recomendadas'],
-          ['Agir', 'Fila de prioridades'],
-          ['Validar', 'Alertas e insights'],
-        ].map(([title, subtitle], index) => (
-          <div key={title} className={`rounded-2xl border p-4 ${index === 0 ? 'bg-black text-white border-black' : 'bg-white border-gray-100'}`}>
-            <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${index === 0 ? 'text-white/60' : 'text-gray-400'}`}>{String(index + 1).padStart(2, '0')}</p>
-            <h3 className="mt-2 font-black text-base">{title}</h3>
-            <p className={`text-sm mt-1 leading-tight ${index === 0 ? 'text-white/75' : 'text-gray-500'}`}>{subtitle}</p>
+      <section className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-4 md:p-5">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Fluxo de decisão</p>
+            <h2 className="text-xl font-black tracking-tight mt-2">Navegação guiada pela leitura da torre</h2>
           </div>
-        ))}
-      </div>
+          <div className="text-sm font-medium text-gray-500">
+            Etapa {activeStepIndex + 1} de {navigationSteps.length}
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+          {navigationSteps.map((step, index) => {
+            const Icon = step.icon;
+            const isActive = activeSection === step.id;
 
-      <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-4">
+            return (
+              <button
+                key={step.id}
+                onClick={() => goToSection(step.id)}
+                className={`text-left rounded-2xl border p-4 transition-all duration-200 ${isActive ? 'bg-black text-white border-black shadow-lg shadow-black/10 scale-[1.01]' : 'bg-white border-gray-100 hover:border-gray-300 hover:-translate-y-0.5'}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${isActive ? 'text-white/60' : 'text-gray-400'}`}>0{index + 1}</p>
+                    <h3 className="mt-2 font-black text-base leading-tight">{step.title}</h3>
+                    <p className={`text-sm mt-1 ${isActive ? 'text-white/75' : 'text-gray-500'}`}>{step.label}</p>
+                  </div>
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${isActive ? 'bg-white text-black' : 'bg-gray-100 text-gray-600'}`}>
+                    <Icon size={18} />
+                  </div>
+                </div>
+                <div className="mt-4 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                  <div className={`h-full rounded-full transition-all ${isActive ? 'bg-[#FECC14] w-full' : 'bg-gray-300 w-1/3'}`} />
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+
+      <div id="kpis" className="scroll-mt-6 bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-4">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Leitura executiva</p>
@@ -324,7 +415,7 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="graficos" className="scroll-mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100">
           <div className="flex items-start justify-between gap-3 mb-2">
             <div>
@@ -373,7 +464,7 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </div>
 
-      <section id="recommended-actions" className={`bg-white rounded-[24px] shadow-sm border p-6 space-y-6 ${focusAction?.section === 'recommended-actions' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
+      <section id="acoes" className={`scroll-mt-6 bg-white rounded-[24px] shadow-sm border p-6 space-y-6 ${focusAction?.section === 'acoes' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Ações recomendadas</p>
@@ -402,7 +493,7 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="prioridades" className="scroll-mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
             <div className="flex items-center justify-between gap-3 mb-4">
               <h3 className="text-lg font-bold">Fila de prioridades</h3>
@@ -480,7 +571,7 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </div>
 
-      <section id="insights-section" className={`rounded-[20px] border bg-white p-5 ${focusAction?.section === 'insights-section' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
+      <section id="insights" className={`scroll-mt-6 rounded-[20px] border bg-white p-5 ${focusAction?.section === 'insights' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
         <div className="flex items-center justify-between gap-3 mb-4">
           <h3 className="text-lg font-bold">Insights automáticos</h3>
           <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Interpretação final do cenário</span>
@@ -501,6 +592,16 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
           ))}
         </div>
       </section>
+
+      {showBackToTop && (
+        <button
+          onClick={goToTop}
+          className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-black px-4 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all hover:bg-gray-800"
+        >
+          <ArrowUp size={16} />
+          Voltar ao topo
+        </button>
+      )}
 
     </div>
   );
