@@ -3,7 +3,8 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import * as XLSX from 'xlsx';
 
-export function RoutesFleet() {
+export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteId?: string; focusAction?: unknown }) {
+  void focusAction;
   const handleExportReport = () => {
     const workbook = XLSX.utils.book_new();
 
@@ -53,6 +54,12 @@ export function RoutesFleet() {
         </div>
       </div>
 
+      {highlightRouteId && (
+        <div className="rounded-2xl border border-[#FF4F00]/20 bg-[#FF4F00]/10 px-4 py-3 text-sm font-medium text-black">
+          Ação disparada pela torre: rota priorizada com foco contextual em {highlightRouteId}.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Fleet Status */}
         <div className="lg:col-span-2 bg-white rounded-[20px] shadow-sm border border-gray-100 p-6">
@@ -88,6 +95,7 @@ export function RoutesFleet() {
               criticality="Alta" 
               destinations={8} 
               progress={65} 
+              highlighted={highlightRouteId === 'RT-1042'}
             />
             <RouteItem 
               id="RT-1043" 
@@ -97,6 +105,7 @@ export function RoutesFleet() {
               criticality="Média" 
               destinations={12} 
               progress={10} 
+              highlighted={highlightRouteId === 'RT-1043'}
             />
             <RouteItem 
               id="RT-1044" 
@@ -106,6 +115,7 @@ export function RoutesFleet() {
               criticality="Baixa" 
               destinations={5} 
               progress={100} 
+              highlighted={highlightRouteId === 'RT-1044'}
             />
           </div>
         </div>
@@ -153,7 +163,7 @@ export function RoutesFleet() {
   );
 }
 
-function RouteItem({ id, driver, type, status, criticality, destinations, progress }: any) {
+function RouteItem({ id, driver, type, status, criticality, destinations, progress, highlighted }: any) {
   const getCriticalityColor = () => {
     if (criticality === 'Alta') return 'bg-red-100 text-red-800';
     if (criticality === 'Média') return 'bg-orange-100 text-orange-800';
@@ -161,7 +171,7 @@ function RouteItem({ id, driver, type, status, criticality, destinations, progre
   };
 
   return (
-    <div className="border border-gray-100 rounded-2xl p-4 hover:bg-gray-50 transition-colors">
+    <div className={`border rounded-2xl p-4 transition-colors ${highlighted ? 'border-[#FF4F00] bg-[#FF4F00]/5 shadow-md' : 'border-gray-100 hover:bg-gray-50'}`}>
       <div className="flex justify-between items-center mb-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gray-100 rounded-xl flex items-center justify-center">

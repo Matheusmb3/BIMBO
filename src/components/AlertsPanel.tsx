@@ -1,6 +1,7 @@
 import { AlertTriangle, CheckCircle, Clock, ArrowRight } from 'lucide-react';
 
-export function AlertsPanel() {
+export function AlertsPanel({ focusStoreId, focusAction }: { focusStoreId?: string; focusAction?: unknown }) {
+  void focusAction;
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
       <div className="flex justify-between items-end">
@@ -18,6 +19,12 @@ export function AlertsPanel() {
         </div>
       </div>
 
+      {focusStoreId && (
+        <div className="rounded-2xl border border-[#FF4F00]/20 bg-[#FF4F00]/10 px-4 py-3 text-sm font-medium text-black">
+          Ação disparada pela torre: alerta destacado para {focusStoreId}.
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
           <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
@@ -31,6 +38,7 @@ export function AlertsPanel() {
             timeRemaining="2h" 
             severity="critical" 
             action="Redirecionar Rota 12" 
+            highlighted={focusStoreId === 'Supermercado Silva'}
           />
           <AlertCard 
             store="Mercadinho Dois Irmãos" 
@@ -39,6 +47,7 @@ export function AlertsPanel() {
             timeRemaining="4h" 
             severity="high" 
             action="Acionar Frota Flex" 
+            highlighted={focusStoreId === 'Mercadinho Dois Irmãos'}
           />
           <AlertCard 
             store="Padaria Central" 
@@ -47,6 +56,7 @@ export function AlertsPanel() {
             timeRemaining="1 dia" 
             severity="medium" 
             action="Notificar CD Próximo" 
+            highlighted={focusStoreId === 'Padaria Central'}
           />
         </div>
 
@@ -92,7 +102,7 @@ export function AlertsPanel() {
   );
 }
 
-function AlertCard({ store, region, product, timeRemaining, severity, action }: any) {
+function AlertCard({ store, region, product, timeRemaining, severity, action, highlighted }: any) {
   const getSeverityColor = () => {
     if (severity === 'critical') return 'bg-red-50 border-red-200';
     if (severity === 'high') return 'bg-orange-50 border-orange-200';
@@ -106,7 +116,7 @@ function AlertCard({ store, region, product, timeRemaining, severity, action }: 
   };
 
   return (
-    <div className={`p-6 rounded-[20px] border ${getSeverityColor()} shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all hover:shadow-md`}>
+    <div className={`p-6 rounded-[20px] border shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 transition-all hover:shadow-md ${getSeverityColor()} ${highlighted ? 'ring-2 ring-[#FF4F00] ring-offset-2' : ''}`}>
       <div className="flex-1">
         <div className="flex items-center gap-3 mb-2">
           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${getSeverityBadge()}`}>

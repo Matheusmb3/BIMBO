@@ -55,8 +55,9 @@ const stepCopy = [
   'Aqui o cliente acompanha a coleta e a rota, entendendo o impacto logistico em tempo real.',
 ] as const;
 
-export function POSApp() {
-  const [activeStep, setActiveStep] = useState(0);
+export function POSApp({ initialStep = 0, focusAction }: { initialStep?: number; focusAction?: unknown }) {
+  const [activeStep, setActiveStep] = useState(initialStep);
+  void focusAction;
   const current = steps[activeStep];
   const progress = useMemo(() => ((activeStep + 1) / steps.length) * 100, [activeStep]);
 

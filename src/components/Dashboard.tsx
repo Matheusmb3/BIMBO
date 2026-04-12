@@ -1,6 +1,6 @@
+import { useEffect, type ComponentType } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Package, Truck, AlertTriangle, CheckCircle2, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users } from 'lucide-react';
-import type { ComponentType } from 'react';
+import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, Route, PackageCheck, LineChart as LineChartIcon } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 const consumptionData = [
@@ -12,13 +12,115 @@ const consumptionData = [
   { time: '18:00', paoForma: 680, bisnaguinha: 450, rap10: 400 },
 ];
 
-const regionData = [
-  { name: 'Zona Sul', abastecido: 85, ruptura: 15 },
-  { name: 'Zona Norte', abastecido: 92, ruptura: 8 },
-  { name: 'Zona Leste', abastecido: 78, ruptura: 22 },
-  { name: 'Zona Oeste', abastecido: 88, ruptura: 12 },
-  { name: 'Centro', abastecido: 95, ruptura: 5 },
+type Severity = 'critical' | 'attention' | 'normal';
+
+type RegionRow = {
+  name: string;
+  abastecido: number;
+  ruptura: number;
+  severity: Severity;
+  trend: string;
+  insight: string;
+  action: string;
+};
+
+const regionData: RegionRow[] = [
+  { name: 'Zona Sul', abastecido: 85, ruptura: 15, severity: 'critical', trend: 'Risco em 3h', insight: '+15% de demanda', action: 'Redirecionar rota 12' },
+  { name: 'Zona Norte', abastecido: 92, ruptura: 8, severity: 'normal', trend: 'Estável', insight: 'Estoque equilibrado', action: 'Monitorar' },
+  { name: 'Zona Leste', abastecido: 78, ruptura: 22, severity: 'critical', trend: 'Risco em 4h', insight: 'Demanda +12%', action: 'Acionar frota flex' },
+  { name: 'Zona Oeste', abastecido: 88, ruptura: 12, severity: 'attention', trend: 'Monitorar', insight: 'Tendência de queda', action: 'Revisar previsão' },
+  { name: 'Centro', abastecido: 95, ruptura: 5, severity: 'normal', trend: 'Estável', insight: 'Operação controlada', action: 'Sem ação' },
 ];
+
+const kpiData = [
+  { title: 'Eficiência da frota', value: '94%', meta: '97%', delta: '+2%', trendUp: true, note: '2 p.p. abaixo da meta', severity: 'attention', signal: 'Meta em recuperação' },
+  { title: 'Ruptura', value: '28 PDVs', meta: '<10', delta: '-5%', trendUp: false, note: 'Acima do limite desejado', severity: 'critical', signal: 'Risco alto' },
+  { title: 'Volume entregue', value: '18.5 ton', meta: '20 ton', delta: '+8%', trendUp: true, note: 'Próximo da meta', severity: 'attention', signal: 'Tendência positiva' },
+  { title: 'Nível de serviço', value: '96%', meta: '>98%', delta: '+1%', trendUp: true, note: 'Estável, mas com margem', severity: 'normal', signal: 'Operação estável' },
+];
+
+const predictiveSignals = [
+  { label: 'Risco de ruptura', value: 'em 4h', tone: 'critical' },
+  { label: 'Demanda', value: '+12% em 3h', tone: 'attention' },
+  { label: 'Estoque', value: 'tendência de queda', tone: 'normal' },
+];
+
+const lastUpdatedLabel = 'há 8 min';
+
+type RecommendationItem = {
+  title: string;
+  action: string;
+  detail: string;
+  impact: string;
+  targetTab: string;
+  targetKey?: string;
+  section?: string;
+  step?: number;
+  icon: ComponentType<{ size?: number; className?: string }>;
+};
+
+const recommendations: RecommendationItem[] = [
+  {
+    title: 'PDV Zona Sul com risco de ruptura em 3h',
+    action: 'Redirecionar rota 12',
+    detail: 'Cobertura baixa e consumo acelerando pedem ação imediata.',
+    impact: '↓ ruptura em até 30%',
+    targetTab: 'routes',
+    targetKey: 'RT-1042',
+    icon: Route,
+  },
+  {
+    title: 'Estoque elevado na Zona Leste',
+    action: 'Gerar pedido automático',
+    detail: 'Converter excesso de leitura em pedido e revisão imediata da previsão.',
+    impact: '↓ excesso em 20%',
+    targetTab: 'pos-app',
+    step: 2,
+    icon: PackageCheck,
+  },
+  {
+    title: 'Atraso na entrega identificado',
+    action: 'Notificar cliente automaticamente',
+    detail: 'Reduz atrito e mantém o PDV informado enquanto a rota é ajustada.',
+    impact: '↓ chamadas manuais em 40%',
+    targetTab: 'alerts',
+    targetKey: 'Supermercado Silva',
+    icon: Bell,
+  },
+  {
+    title: 'Demanda subindo acima da previsão',
+    action: 'Ajustar previsão',
+    detail: 'Atualizar leitura de consumo para evitar reação tardia.',
+    impact: '↑ acurácia da previsão',
+    targetTab: 'dashboard',
+    section: 'insights-section',
+    icon: LineChartIcon,
+  },
+];
+
+const automaticInsights = [
+  { title: 'Aumento de demanda na região Sul (+15%) eleva risco de ruptura nas próximas horas', tone: 'critical' },
+  { title: 'Zona Norte opera com excesso de estoque e saída abaixo do esperado', tone: 'attention' },
+  { title: 'Produtos de alto giro concentram o maior risco operacional no momento', tone: 'critical' },
+];
+
+const alertRows = [
+  { store: 'Supermercado Silva', region: 'Zona Sul', product: 'Pão de Forma Tradicional', stock: '2 unid. (2h)', severity: 'critical', action: 'Redirecionar rota 12', targetTab: 'routes', targetKey: 'RT-1042' },
+  { store: 'Mercadinho Dois Irmãos', region: 'Zona Leste', product: 'Bisnaguinha', stock: '5 unid. (4h)', severity: 'attention', action: 'Acionar frota flex', targetTab: 'routes', targetKey: 'RT-1043' },
+  { store: 'Padaria Central', region: 'Centro', product: 'Rap10 Integral', stock: '12 unid. (1 dia)', severity: 'normal', action: 'Notificar PDV', targetTab: 'alerts', targetKey: 'Padaria Central' },
+];
+
+type ActionFocus = {
+  tab: string;
+  section?: string;
+  key?: string;
+  step?: number;
+};
+
+type DashboardProps = {
+  focusAction?: ActionFocus | null;
+  onAction: (tab: string, focus?: Omit<ActionFocus, 'tab'>) => void;
+};
 
 const rankedRegions = [...regionData].sort((a, b) => b.ruptura - a.ruptura);
 
@@ -37,7 +139,12 @@ const decisionRules = [
   },
 ];
 
-export function Dashboard() {
+export function Dashboard({ focusAction, onAction }: DashboardProps) {
+  useEffect(() => {
+    if (focusAction?.tab !== 'dashboard' || !focusAction.section) return;
+    document.getElementById(focusAction.section)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, [focusAction]);
+
   const handleExportReport = () => {
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
     const pageWidth = doc.internal.pageSize.getWidth();
@@ -155,189 +262,79 @@ export function Dashboard() {
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end gap-6 flex-wrap">
         <div>
           <h1 className="text-4xl font-bold tracking-tight text-black">Visão Geral da Operação</h1>
-          <p className="text-gray-500 mt-2 text-lg">Monitoramento em tempo real de estoques, rotas e entregas.</p>
+          <p className="text-gray-500 mt-2 text-lg max-w-3xl">Painel central de monitoramento da operação logística, permitindo identificar desvios, antecipar riscos e apoiar decisões em tempo real.</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex flex-col items-end gap-3">
+          <div className="px-4 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-wider text-gray-500 shadow-sm">
+            Última atualização: {lastUpdatedLabel}
+          </div>
+          <div className="flex gap-3">
           <button onClick={handleExportReport} className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
             Exportar Relatório
           </button>
           <button className="bg-[#FF4F00] text-black px-4 py-2 rounded-xl font-bold text-sm hover:bg-[#e64700] transition-colors shadow-[0_4px_14px_0_rgba(255,79,0,0.39)]">
             Atualizar Dados
           </button>
+          </div>
         </div>
       </div>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <MetricCard 
-          title="Entregas em Andamento" 
-          value="142" 
-          trend="+12%" 
-          trendUp={true} 
-          icon={Truck} 
-          color="bg-[#4E18FF]" 
-        />
-        <MetricCard 
-          title="Risco de Ruptura (PDVs)" 
-          value="28" 
-          trend="-5%" 
-          trendUp={false} 
-          icon={AlertTriangle} 
-          color="bg-[#FF4F00]" 
-        />
-        <MetricCard 
-          title="Eficiência da Frota" 
-          value="94%" 
-          trend="+2%" 
-          trendUp={true} 
-          icon={CheckCircle2} 
-          color="bg-[#3D7700]" 
-        />
-        <MetricCard 
-          title="Volume Entregue (Ton)" 
-          value="18.5" 
-          trend="+8%" 
-          trendUp={true} 
-          icon={Package} 
-          color="bg-[#FECC14]" 
-          iconColor="text-black"
-        />
-      </div>
-
-      <section className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-6">
+      <div className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-5">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Leitura executiva</p>
             <h2 className="text-2xl font-black tracking-tight mt-2">O que a operação está dizendo agora</h2>
-            <p className="text-gray-500 mt-2 max-w-3xl">
-              A torre não apenas mostra dados: ela interpreta o cenário, define prioridade e aponta a melhor ação para reduzir ruptura e preservar o nível de serviço.
-            </p>
+            <p className="text-gray-500 mt-2 max-w-3xl">A torre não apenas mostra dados: ela interpreta o cenário, define prioridade e aponta a melhor ação para reduzir ruptura e preservar o nível de serviço.</p>
           </div>
           <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
-            <span className="px-3 py-1.5 rounded-full bg-black text-white">2 regiões com atenção</span>
-            <span className="px-3 py-1.5 rounded-full bg-[#FECC14] text-black">Ação em até 2h</span>
-            <span className="px-3 py-1.5 rounded-full bg-[#3D7700] text-white">Foco em prevenção</span>
+            {predictiveSignals.map((signal) => (
+              <span key={signal.label} className={`px-3 py-1.5 rounded-full ${signal.tone === 'critical' ? 'bg-red-100 text-red-800' : signal.tone === 'attention' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                {signal.label}: {signal.value}
+              </span>
+            ))}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-          <DecisionCard
-            title="Diagnóstico da operação"
-            icon={Sparkles}
-            tone="bg-black text-white"
-            badge="Resumo"
-            primary={`Maior risco: ${rankedRegions[0].name}`}
-            secondary={`${rankedRegions[0].ruptura}% de ruptura e cobertura de ${rankedRegions[0].abastecido}%`}
-            footer="A operação segue saudável no consolidado, mas com foco na região mais exposta."
-          />
-          <DecisionCard
-            title="Prioridade imediata"
-            icon={AlertTriangle}
-            tone="bg-[#FF4F00] text-black"
-            badge="Alta"
-            primary="Redirecionar rota crítica"
-            secondary="Evita que o estoque acabe antes da próxima janela de entrega."
-            footer="Ação sugerida: Rota 12 + frota flex."
-          />
-          <DecisionCard
-            title="Apoio à decisão"
-            icon={Target}
-            tone="bg-[#4E18FF] text-white"
-            badge="Executivo"
-            primary="Escalar ao CD mais próximo"
-            secondary="Combina cobertura baixa com consumo crescente para antecipar a resposta."
-            footer={`Consumo do Pão de Forma subiu ${consumptionData[consumptionData.length - 1].paoForma - consumptionData[0].paoForma} unidades no período.`}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+          {kpiData.map((kpi) => (
+            <KpiCard key={kpi.title} {...kpi} />
+          ))}
         </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="text-lg font-bold">Fila de prioridades</h3>
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Do maior risco para o menor</span>
-            </div>
-            <div className="space-y-3">
-              {rankedRegions.slice(0, 3).map((region, index) => (
-                <div key={region.name} className="flex items-start justify-between gap-4 rounded-2xl bg-white border border-gray-100 p-4">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black ${index === 0 ? 'bg-red-100 text-red-700' : index === 1 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-bold text-black">{region.name}</p>
-                      <p className="text-sm text-gray-500 mt-1">{region.abastecido}% abastecido | {region.ruptura}% em risco de ruptura</p>
-                    </div>
-                  </div>
-                  <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase ${index === 0 ? 'bg-red-100 text-red-800' : index === 1 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>
-                    {index === 0 ? 'Agora' : index === 1 ? 'Em seguida' : 'Monitorar'}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[20px] border border-gray-100 bg-white p-5">
-            <div className="flex items-center justify-between gap-3 mb-4">
-              <h3 className="text-lg font-bold">Regras de apoio à decisão</h3>
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Didático e acionável</span>
-            </div>
-            <div className="space-y-3">
-              {decisionRules.map((rule, index) => (
-                <div key={rule.title} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/70">
-                  <div className="flex items-start gap-3">
-                    <div className="mt-0.5 w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm font-black shrink-0">
-                      {index + 1}
-                    </div>
-                    <div>
-                      <p className="font-bold text-black">{rule.title}</p>
-                      <p className="text-sm text-gray-600 mt-1 leading-relaxed">{rule.text}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100">
-          <h3 className="text-xl font-bold mb-6">Consumo Registrado via App (Tempo Real)</h3>
+          <h3 className="text-xl font-bold mb-2">Evolução de consumo</h3>
+          <p className="text-sm text-gray-500 mb-5">Tendência de crescimento de demanda ao longo do dia, útil para antecipar consumo e ruptura.</p>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={consumptionData}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} dx={-10} />
-                <Tooltip 
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
-                  itemStyle={{ fontWeight: 500 }}
-                />
+                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} dx={-10} />
+                <Tooltip contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} itemStyle={{ fontWeight: 500 }} />
                 <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
-                <Line type="monotone" dataKey="paoForma" name="Pão de Forma" stroke="#FF4F00" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} activeDot={{r: 6}} />
-                <Line type="monotone" dataKey="bisnaguinha" name="Bisnaguinha" stroke="#4E18FF" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} />
-                <Line type="monotone" dataKey="rap10" name="Rap10" stroke="#F577ED" strokeWidth={3} dot={{r: 4, strokeWidth: 2}} />
+                <Line type="monotone" dataKey="paoForma" name="Pão de Forma" stroke="#FF4F00" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="bisnaguinha" name="Bisnaguinha" stroke="#4E18FF" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} />
+                <Line type="monotone" dataKey="rap10" name="Rap10" stroke="#F577ED" strokeWidth={3} dot={{ r: 4, strokeWidth: 2 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100">
-          <h3 className="text-xl font-bold mb-6">Status de Abastecimento por Região (%)</h3>
+          <h3 className="text-xl font-bold mb-2">Status por região</h3>
+          <p className="text-sm text-gray-500 mb-5">Cobertura e risco por área, destacando onde a operação está mais sensível.</p>
           <div className="h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regionData} layout="vertical" margin={{ top: 0, right: 30, left: 20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f0f0f0" />
-                <XAxis type="number" axisLine={false} tickLine={false} tick={{fill: '#888', fontSize: 12}} />
-                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fill: '#333', fontSize: 12, fontWeight: 500}} />
-                <Tooltip 
-                  cursor={{fill: '#f5f5f5'}}
-                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
-                />
+                <XAxis type="number" axisLine={false} tickLine={false} tick={{ fill: '#888', fontSize: 12 }} />
+                <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#333', fontSize: 12, fontWeight: 500 }} />
+                <Tooltip cursor={{ fill: '#f5f5f5' }} contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }} />
                 <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                 <Bar dataKey="abastecido" name="Abastecido" stackId="a" fill="#3D7700" radius={[0, 0, 0, 0]} barSize={24} />
                 <Bar dataKey="ruptura" name="Risco de Ruptura" stackId="a" fill="#FF4F00" radius={[0, 4, 4, 0]} />
@@ -347,68 +344,192 @@ export function Dashboard() {
         </div>
       </div>
 
-      {/* Alerts Table */}
-      <div className="bg-white rounded-[20px] shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-          <h3 className="text-xl font-bold">Alertas Críticos de Ruptura</h3>
-          <button className="text-sm font-bold text-[#4E18FF] hover:underline">Ver todos</button>
+      <section id="recommended-actions" className={`bg-white rounded-[24px] shadow-sm border p-6 space-y-6 ${focusAction?.section === 'recommended-actions' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Ações recomendadas</p>
+            <h2 className="text-2xl font-black tracking-tight mt-2">Transformar dados em decisão prática</h2>
+            <p className="text-gray-500 mt-2 max-w-3xl">Ações recomendadas com base em dados em tempo real.</p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
+            <span className="px-3 py-1.5 rounded-full bg-black text-white">Prioridade máxima</span>
+            <span className="px-3 py-1.5 rounded-full bg-[#FECC14] text-black">Ação imediata</span>
+            <span className="px-3 py-1.5 rounded-full bg-[#3D7700] text-white">Apoio à decisão</span>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                <th className="p-4 font-semibold">Ponto de Venda</th>
-                <th className="p-4 font-semibold">Região</th>
-                <th className="p-4 font-semibold">Produto Crítico</th>
-                <th className="p-4 font-semibold">Estoque Estimado</th>
-                <th className="p-4 font-semibold">Ação Recomendada</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm divide-y divide-gray-100">
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium">Supermercado Silva</td>
-                <td className="p-4 text-gray-600">Zona Sul</td>
-                <td className="p-4"><span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Pão de Forma Tradicional</span></td>
-                <td className="p-4 font-mono text-red-600 font-bold">2 unid. (2h restantes)</td>
-                <td className="p-4"><button className="text-xs font-bold bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800">Redirecionar Rota 12</button></td>
-              </tr>
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium">Mercadinho Dois Irmãos</td>
-                <td className="p-4 text-gray-600">Zona Leste</td>
-                <td className="p-4"><span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">Bisnaguinha</span></td>
-                <td className="p-4 font-mono text-orange-600 font-bold">5 unid. (4h restantes)</td>
-                <td className="p-4"><button className="text-xs font-bold bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800">Acionar Frota Flex</button></td>
-              </tr>
-              <tr className="hover:bg-gray-50 transition-colors">
-                <td className="p-4 font-medium">Padaria Central</td>
-                <td className="p-4 text-gray-600">Centro</td>
-                <td className="p-4"><span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Rap10 Integral</span></td>
-                <td className="p-4 font-mono text-yellow-600 font-bold">12 unid. (1 dia)</td>
-                <td className="p-4"><button className="text-xs font-bold bg-gray-200 text-black px-3 py-1.5 rounded-lg hover:bg-gray-300">Notificar CD Próximo</button></td>
-              </tr>
-            </tbody>
-          </table>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+          {recommendations.map((item) => (
+            <RecommendationCard
+              key={item.title}
+              title={item.title}
+              action={item.action}
+              detail={item.detail}
+              impact={item.impact}
+              icon={item.icon}
+              onExecute={() => onAction(item.targetTab, { key: item.targetKey, section: item.section, step: item.step })}
+            />
+          ))}
         </div>
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <h3 className="text-lg font-bold">Fila de prioridades</h3>
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Alta / Média / Baixa</span>
+          </div>
+          <div className="space-y-3">
+            {rankedRegions.slice(0, 3).map((region, index) => {
+              const severityClasses = getSeverityClasses(region.severity);
+              const urgency = index === 0 ? 'Alta' : index === 1 ? 'Média' : 'Baixa';
+
+              return (
+                <div key={region.name} className={`flex items-start justify-between gap-4 rounded-2xl border p-4 ${region.severity === 'critical' ? 'border-red-200 bg-red-50' : region.severity === 'attention' ? 'border-yellow-200 bg-yellow-50' : 'border-green-100 bg-white'}`}>
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black ${severityClasses.badge}`}>
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-black">{region.name}</p>
+                      <p className="text-sm text-gray-500 mt-1">{region.abastecido}% abastecido | {region.ruptura}% em risco | {region.trend}</p>
+                      <p className="text-xs text-gray-500 mt-1">{region.insight}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end gap-2">
+                    <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase ${severityClasses.pill}`}>{urgency}</span>
+                    <span className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-black text-white">{region.action}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <div className="rounded-[20px] border border-gray-100 bg-white p-5">
+          <h3 className="text-lg font-bold mb-4">Tabela detalhada de alertas</h3>
+          <p className="text-sm text-gray-500 mb-4">Detalhe operacional para validar as decisões e acionar a execução rapidamente.</p>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                  <th className="p-3 font-semibold">Ponto de Venda</th>
+                  <th className="p-3 font-semibold">Região</th>
+                  <th className="p-3 font-semibold">Produto Crítico</th>
+                  <th className="p-3 font-semibold">Estoque</th>
+                  <th className="p-3 font-semibold">Prioridade</th>
+                  <th className="p-3 font-semibold">Ação Rápida</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {alertRows.map((row) => {
+                  const severityClasses = getSeverityClasses(row.severity as Severity);
+                  const isCritical = row.severity === 'critical';
+
+                  return (
+                    <tr key={row.store} className={`${isCritical ? 'bg-red-50' : 'hover:bg-gray-50'} transition-colors`}>
+                      <td className="p-3 font-medium">{row.store}</td>
+                      <td className="p-3 text-gray-600">{row.region}</td>
+                      <td className="p-3">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${severityClasses.badge}`}>{row.product}</span>
+                      </td>
+                      <td className="p-3 font-mono font-bold text-gray-700">{row.stock}</td>
+                      <td className="p-3">
+                        <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${severityClasses.pill}`}>{row.severity === 'critical' ? 'Crítico' : row.severity === 'attention' ? 'Atenção' : 'Normal'}</span>
+                      </td>
+                      <td className="p-3">
+                        <button onClick={() => onAction(row.targetTab, { key: row.targetKey })} className="text-xs font-bold bg-black text-white px-3 py-1.5 rounded-lg hover:bg-gray-800">
+                          {row.action}
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <section id="insights-section" className={`rounded-[20px] border bg-white p-5 ${focusAction?.section === 'insights-section' ? 'border-[#FF4F00] ring-2 ring-[#FF4F00]/20' : 'border-gray-100'}`}>
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <h3 className="text-lg font-bold">Insights automáticos</h3>
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Interpretação final do cenário</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {automaticInsights.map((item) => (
+            <div key={item.title} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/70">
+              <div className="flex items-start gap-3">
+                <div className={`mt-0.5 w-8 h-8 rounded-full flex items-center justify-center text-sm font-black shrink-0 ${item.tone === 'critical' ? 'bg-red-600 text-white' : item.tone === 'attention' ? 'bg-yellow-500 text-black' : 'bg-black text-white'}`}>
+                  <ArrowUpRight size={14} />
+                </div>
+                <div>
+                  <p className="font-bold text-black leading-snug">{item.title}</p>
+                  <p className="text-sm text-gray-600 mt-1 leading-relaxed">Análise executiva para explicar o cenário após visualização, decisão e execução.</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+    </div>
+  );
+}
+
+function getSeverityClasses(severity: Severity) {
+  if (severity === 'critical') return { badge: 'bg-red-100 text-red-700', pill: 'bg-red-100 text-red-800' };
+  if (severity === 'attention') return { badge: 'bg-yellow-100 text-yellow-800', pill: 'bg-yellow-100 text-yellow-800' };
+  return { badge: 'bg-green-100 text-green-800', pill: 'bg-green-100 text-green-800' };
+}
+
+function KpiCard({ title, value, meta, delta, trendUp, note, severity, signal }: any) {
+  const classes = getSeverityClasses(severity);
+
+  return (
+    <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex flex-col gap-4">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-bold uppercase tracking-[0.28em] text-gray-400">Meta vs real</p>
+          <h3 className="text-gray-500 text-sm font-medium mt-2">{title}</h3>
+        </div>
+        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${classes.pill}`}>{signal}</span>
+      </div>
+      <div className="flex items-end justify-between gap-4">
+        <div>
+          <p className="text-3xl font-black tracking-tight">{value}</p>
+          <p className="text-sm text-gray-500 mt-1">Meta: {meta}</p>
+        </div>
+        <div className={`flex items-center gap-1 text-sm font-bold ${trendUp ? 'text-green-600' : 'text-red-600'}`}>
+          {trendUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+          {delta}
+        </div>
+      </div>
+      <div className={`rounded-2xl px-3 py-2 text-sm font-medium ${classes.badge}`}>
+        {note}
       </div>
     </div>
   );
 }
 
-function MetricCard({ title, value, trend, trendUp, icon: Icon, color, iconColor = "text-white" }: any) {
+function RecommendationCard({ title, action, detail, impact, icon: Icon, onExecute }: any) {
   return (
-    <div className="bg-white p-6 rounded-[20px] shadow-sm border border-gray-100 flex flex-col">
-      <div className="flex justify-between items-start mb-4">
-        <div className={`w-12 h-12 rounded-2xl ${color} flex items-center justify-center shadow-sm`}>
-          <Icon className={iconColor} size={24} />
+    <article className="rounded-[22px] border border-gray-100 bg-gray-50/70 p-5 flex flex-col gap-4">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#FF4F00]">Recomendação</p>
+          <h3 className="text-lg font-black tracking-tight mt-2 leading-snug">{title}</h3>
         </div>
-        <div className={`flex items-center gap-1 text-sm font-bold ${trendUp ? 'text-green-600' : 'text-red-600'}`}>
-          {trendUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-          {trend}
+        <div className="w-11 h-11 rounded-2xl bg-black text-white flex items-center justify-center shrink-0">
+          <Icon size={20} />
         </div>
       </div>
-      <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
-      <p className="text-3xl font-black tracking-tight">{value}</p>
-    </div>
+      <p className="text-sm text-gray-600 leading-relaxed">{detail}</p>
+      <div className="rounded-2xl bg-white px-3 py-2 text-xs font-bold uppercase tracking-wider text-gray-500">Impacto estimado: {impact}</div>
+      <button onClick={onExecute} className="inline-flex items-center justify-center gap-2 rounded-xl bg-black px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-gray-800">
+        {action} <ArrowUpRight size={16} />
+      </button>
+    </article>
   );
 }
 
