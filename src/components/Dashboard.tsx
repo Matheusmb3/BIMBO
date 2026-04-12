@@ -20,6 +20,23 @@ const regionData = [
   { name: 'Centro', abastecido: 95, ruptura: 5 },
 ];
 
+const rankedRegions = [...regionData].sort((a, b) => b.ruptura - a.ruptura);
+
+const decisionRules = [
+  {
+    title: 'Cobertura abaixo de 80%',
+    text: 'Antecipar entrega e acionar frota flex para evitar ruptura nas próximas horas.',
+  },
+  {
+    title: 'Ruptura acima de 15%',
+    text: 'Priorizar a região na fila da torre e comunicar o centro de distribuição mais próximo.',
+  },
+  {
+    title: 'Consumo em alta contínua',
+    text: 'Revisar reposição e ajustar a rota antes que o estoque crítico esgote.',
+  },
+];
+
 export function Dashboard() {
   const handleExportReport = () => {
     const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -78,7 +95,7 @@ export function Dashboard() {
     addSectionTitle('Resumo Executivo', y);
     y += 14;
     y = addWrappedText(
-      'A operação mantém boa eficiência global, mas ainda apresenta risco concentrado de ruptura em pontos de venda da Zona Sul e Zona Leste. A priorização por criticidade e a redistribuição de frota permanecem como alavancas principais para reduzir perdas e estabilizar o nível de serviço.',
+      'A operação está estável no consolidado, mas o risco se concentra na Zona Leste e na Zona Sul. A recomendação é agir nas próximas 2 horas com redirecionamento de rota, frota flex e comunicação direta com os CDs próximos.',
       margin,
       y,
       contentWidth,
@@ -98,7 +115,7 @@ export function Dashboard() {
     addSectionTitle('Leitura Operacional', y);
     y += 13;
     y = addWrappedText(
-      'Consumo em alta nos principais produtos, abastecimento equilibrado no Centro e na Zona Norte, e necessidade de intervenção imediata em pontos com cobertura inferior a 80%. O painel recomenda redirecionamento de rotas, acionamento da frota flexível e notificação dos centros de distribuição mais próximos.',
+      'O quadro operacional mostra pressão de demanda ao longo do dia, com o Centro e a Zona Norte mais protegidos e a Zona Leste em condição crítica. O apoio à decisão prioriza a região mais exposta, recomenda ação imediata e orienta o time sobre o que fazer primeiro.',
       margin,
       y,
       contentWidth,
@@ -189,6 +206,102 @@ export function Dashboard() {
           iconColor="text-black"
         />
       </div>
+
+      <section className="bg-white rounded-[24px] shadow-sm border border-gray-100 p-6 space-y-6">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.3em] text-[#FF4F00]">Leitura executiva</p>
+            <h2 className="text-2xl font-black tracking-tight mt-2">O que a operação está dizendo agora</h2>
+            <p className="text-gray-500 mt-2 max-w-3xl">
+              A torre não apenas mostra dados: ela interpreta o cenário, define prioridade e aponta a melhor ação para reduzir ruptura e preservar o nível de serviço.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-wider">
+            <span className="px-3 py-1.5 rounded-full bg-black text-white">2 regiões com atenção</span>
+            <span className="px-3 py-1.5 rounded-full bg-[#FECC14] text-black">Ação em até 2h</span>
+            <span className="px-3 py-1.5 rounded-full bg-[#3D7700] text-white">Foco em prevenção</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+          <DecisionCard
+            title="Diagnóstico da operação"
+            icon={Sparkles}
+            tone="bg-black text-white"
+            badge="Resumo"
+            primary={`Maior risco: ${rankedRegions[0].name}`}
+            secondary={`${rankedRegions[0].ruptura}% de ruptura e cobertura de ${rankedRegions[0].abastecido}%`}
+            footer="A operação segue saudável no consolidado, mas com foco na região mais exposta."
+          />
+          <DecisionCard
+            title="Prioridade imediata"
+            icon={AlertTriangle}
+            tone="bg-[#FF4F00] text-black"
+            badge="Alta"
+            primary="Redirecionar rota crítica"
+            secondary="Evita que o estoque acabe antes da próxima janela de entrega."
+            footer="Ação sugerida: Rota 12 + frota flex."
+          />
+          <DecisionCard
+            title="Apoio à decisão"
+            icon={Target}
+            tone="bg-[#4E18FF] text-white"
+            badge="Executivo"
+            primary="Escalar ao CD mais próximo"
+            secondary="Combina cobertura baixa com consumo crescente para antecipar a resposta."
+            footer={`Consumo do Pão de Forma subiu ${consumptionData[consumptionData.length - 1].paoForma - consumptionData[0].paoForma} unidades no período.`}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="rounded-[20px] border border-gray-100 bg-gray-50/80 p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="text-lg font-bold">Fila de prioridades</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Do maior risco para o menor</span>
+            </div>
+            <div className="space-y-3">
+              {rankedRegions.slice(0, 3).map((region, index) => (
+                <div key={region.name} className="flex items-start justify-between gap-4 rounded-2xl bg-white border border-gray-100 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className={`w-10 h-10 rounded-2xl flex items-center justify-center font-black ${index === 0 ? 'bg-red-100 text-red-700' : index === 1 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-600'}`}>
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-black">{region.name}</p>
+                      <p className="text-sm text-gray-500 mt-1">{region.abastecido}% abastecido | {region.ruptura}% em risco de ruptura</p>
+                    </div>
+                  </div>
+                  <span className={`px-3 py-1.5 rounded-full text-xs font-bold uppercase ${index === 0 ? 'bg-red-100 text-red-800' : index === 1 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}`}>
+                    {index === 0 ? 'Agora' : index === 1 ? 'Em seguida' : 'Monitorar'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[20px] border border-gray-100 bg-white p-5">
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="text-lg font-bold">Regras de apoio à decisão</h3>
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Didático e acionável</span>
+            </div>
+            <div className="space-y-3">
+              {decisionRules.map((rule, index) => (
+                <div key={rule.title} className="rounded-2xl border border-gray-100 p-4 bg-gray-50/70">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-0.5 w-8 h-8 rounded-full bg-black text-white flex items-center justify-center text-sm font-black shrink-0">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <p className="font-bold text-black">{rule.title}</p>
+                      <p className="text-sm text-gray-600 mt-1 leading-relaxed">{rule.text}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -296,6 +409,29 @@ function MetricCard({ title, value, trend, trendUp, icon: Icon, color, iconColor
       <h3 className="text-gray-500 text-sm font-medium mb-1">{title}</h3>
       <p className="text-3xl font-black tracking-tight">{value}</p>
     </div>
+  );
+}
+
+function DecisionCard({ title, icon: Icon, tone, badge, primary, secondary, footer }: any) {
+  return (
+    <article className={`rounded-[22px] p-5 shadow-sm border border-gray-100 ${tone}`}>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-70">{badge}</p>
+          <h3 className="text-xl font-black tracking-tight mt-2">{title}</h3>
+        </div>
+        <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${tone.includes('white') ? 'bg-white text-black' : 'bg-black text-white'}`}>
+          <Icon size={20} />
+        </div>
+      </div>
+      <div className="mt-5 space-y-2">
+        <p className="text-base font-bold">{primary}</p>
+        <p className={`text-sm leading-relaxed ${tone.includes('white') ? 'text-white/75' : 'text-black/75'}`}>{secondary}</p>
+      </div>
+      <div className="mt-5 pt-4 border-t border-white/10 text-sm font-medium opacity-90">
+        {footer}
+      </div>
+    </article>
   );
 }
 
