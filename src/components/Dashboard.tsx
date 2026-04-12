@@ -413,11 +413,11 @@ const presentationSlides: PresentationSlide[] = [
   {
     number: '11',
     eyebrow: 'Conclusão',
-    title: 'A logística deixa de reagir e passa a antecipar',
+    title: 'Da reação à antecipação',
     paragraphs: [
-      'Os desafios centrais estão na baixa integração, na pouca visibilidade e na falta de previsibilidade que limitam a decisão da Mariana.',
-      'A solução migra a operação para um modelo preditivo, com dados em tempo real, torre de controle e gestão ativa de exceções.',
-      'O resultado é menos custo, menos ruptura, menos desperdício e mais eficiência com melhor nível de serviço.',
+      'Os principais desafios estão na falta de integração, visibilidade e previsibilidade da operação, e não apenas na execução logística.',
+      'A solução transforma o modelo reativo em preditivo, com dados em tempo real, integração entre áreas, previsão de demanda, roteirização inteligente e gestão ativa de exceções.',
+      'O impacto é claro: redução de custos logísticos, menos desperdício e ruptura, mais eficiência operacional e melhor nível de serviço.',
     ],
     subtitle: 'A logística deixa de reagir ao problema e passa a antecipar o futuro.',
     layout: 'closing',
