@@ -99,31 +99,41 @@ export function POSApp() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        <div className="flex flex-col md:flex-row md:items-stretch gap-3">
           {stepFlow.map((item, index) => {
             const isActive = index === activeStep;
             const Icon = item.icon;
+
             return (
-              <button
-                key={item.label}
-                onClick={() => setActiveStep(index)}
-                className={`relative overflow-hidden rounded-2xl border p-4 text-left transition-all ${isActive ? 'border-black bg-black text-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300'}`}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${isActive ? 'text-white/60' : 'text-gray-400'}`}>Passo 0{index + 1}</p>
-                    <h3 className="mt-2 font-black text-lg">{item.label}</h3>
-                    <p className={`text-sm mt-1 ${isActive ? 'text-white/75' : 'text-gray-500'}`}>{item.hint}</p>
+              <div key={item.label} className="flex flex-col md:flex-row md:items-center gap-3 md:flex-1">
+                <button
+                  onClick={() => setActiveStep(index)}
+                  className={`relative overflow-hidden rounded-2xl border p-4 text-left transition-all md:flex-1 ${isActive ? 'border-black bg-black text-white shadow-lg' : 'border-gray-200 bg-white hover:border-gray-300'}`}
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${isActive ? 'text-white/60' : 'text-gray-400'}`}>Passo 0{index + 1}</p>
+                      <h3 className="mt-2 font-black text-lg">{item.label}</h3>
+                      <p className={`text-sm mt-1 ${isActive ? 'text-white/75' : 'text-gray-500'}`}>{item.hint}</p>
+                    </div>
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-white text-black' : 'bg-gray-100 text-gray-500'}`}>
+                      <Icon size={18} />
+                    </div>
                   </div>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isActive ? 'bg-white text-black' : 'bg-gray-100 text-gray-500'}`}>
-                    <Icon size={18} />
+                  <div className="mt-4 flex items-center gap-2">
+                    <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#FECC14]' : 'bg-gray-300'}`} />
+                    <span className={`text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-white/75' : 'text-gray-400'}`}>Clique para navegar</span>
                   </div>
-                </div>
-                <div className="mt-4 flex items-center gap-2">
-                  <span className={`w-2 h-2 rounded-full ${isActive ? 'bg-[#FECC14]' : 'bg-gray-300'}`} />
-                  <span className={`text-[11px] font-bold uppercase tracking-wider ${isActive ? 'text-white/75' : 'text-gray-400'}`}>Clique para navegar</span>
-                </div>
-              </button>
+                </button>
+
+                {index < stepFlow.length - 1 && (
+                  <div className="hidden md:flex items-center justify-center text-gray-300 shrink-0">
+                    <div className="w-10 h-10 rounded-full border border-gray-200 bg-white flex items-center justify-center shadow-sm">
+                      <ArrowRight size={16} />
+                    </div>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
