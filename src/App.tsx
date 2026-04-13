@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react';
+import { LayoutDashboard } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
 import { Canvas, Dashboard, PresentationDeck } from './components/Dashboard';
 import { POSApp } from './components/POSApp';
@@ -36,6 +37,16 @@ export default function App() {
       <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
       
       <main className="flex-1 ml-64 overflow-y-auto">
+        {activeTab !== 'dashboard' && (
+          <button
+            type="button"
+            onClick={() => handleTabChange('dashboard')}
+            className="fixed right-6 top-6 z-50 inline-flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm font-bold text-white shadow-[0_10px_30px_rgba(0,0,0,0.2)] transition-colors hover:bg-gray-800"
+          >
+            <LayoutDashboard size={16} />
+            Voltar para Torre de Controle
+          </button>
+        )}
         {activeTab === 'dashboard' && <Dashboard focusAction={actionFocus} onAction={handleAction} />}
         {activeTab === 'presentation' && <PresentationDeck />}
         {activeTab === 'canvas' && <Canvas />}
