@@ -155,6 +155,7 @@ const zones: ZoneOverlay[] = [
 ];
 
 const baseCenter: [number, number] = [-23.55052, -46.633308];
+const lastUpdatedLabel = 'há 6 min';
 
 function MapController({ center, zoom }: { center: [number, number]; zoom: number }) {
   const map = useMap();
@@ -232,6 +233,8 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
   const [selectedPriority, setSelectedPriority] = useState<RoutePriority | 'Todas'>('Todas');
   const [allocationSuggestion, setAllocationSuggestion] = useState<string | null>(null);
 
+  const activeFilterCount = [selectedRegion !== 'Todas', selectedStatus !== 'Todos', selectedPriority !== 'Todas'].filter(Boolean).length;
+
   useEffect(() => {
     if (highlightRouteId) {
       setSelectedRouteId(highlightRouteId);
@@ -266,17 +269,24 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
     const completion = Math.round(routes.reduce((sum, route) => sum + route.progress, 0) / routes.length);
 
     return [
-      { label: 'Veículos em rota', value: active, tone: 'normal' as const, icon: Truck },
-      { label: 'Veículos atrasados', value: delayed, tone: 'attention' as const, icon: Clock },
-      { label: 'Entregas concluídas', value: `${completion}%`, tone: 'normal' as const, icon: CheckCircle2 },
-      { label: 'Rotas críticas', value: critical, tone: 'critical' as const, icon: AlertCircle },
+      { label: 'Veículos em rota', value: active, tone: 'normal' as const, icon: Truck, status: active === 1 ? 'Operação reduzida' : active > 1 ? 'Operação ativa' : 'Sem cobertura', statusTone: active <= 1 ? 'attention' : 'normal' },
+      { label: 'Veículos atrasados', value: delayed, tone: 'attention' as const, icon: Clock, status: delayed > 0 ? 'Ação necessária' : 'Sem atraso', statusTone: delayed > 0 ? 'critical' : 'normal' },
+      { label: 'Entregas concluídas', value: `${completion}%`, tone: 'normal' as const, icon: CheckCircle2, status: completion < 50 ? 'Abaixo do esperado' : 'Dentro do ritmo', statusTone: completion < 50 ? 'attention' : 'normal' },
+      { label: 'Rotas críticas', value: critical, tone: 'critical' as const, icon: AlertCircle, status: critical > 0 ? 'Alta prioridade' : 'Sem criticidade', statusTone: critical > 0 ? 'critical' : 'normal' },
     ];
   }, []);
 
   const zoneLeader = useMemo(() => [...zones].sort((a, b) => b.risk - a.risk)[0], []);
 
   const handleAllocateFleet = () => {
-    setAllocationSuggestion(`Sugestão: alocar ${zoneLeader.suggestedVehicles} veículo${zoneLeader.suggestedVehicles > 1 ? 's' : ''} na ${zoneLeader.name} (risco de ruptura elevado).`);
+    const plusVehicles = Math.max(1, zoneLeader.suggestedVehicles);
+    setAllocationSuggestion(`${zoneLeader.name} com risco elevado de ruptura. Sugestão: alocar +${plusVehicles} veículo${plusVehicles > 1 ? 's' : ''}.`);
+  };
+
+  const clearFilters = () => {
+    setSelectedRegion('Todas');
+    setSelectedStatus('Todos');
+    setSelectedPriority('Todas');
   };
 
   const handleExportReport = () => {
@@ -328,17 +338,22 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
           </div>
           <h1 className="text-4xl font-black tracking-tight text-black">Rotas & Frota Flexível</h1>
           <p className="text-gray-500 mt-2 text-lg max-w-3xl">
-            Visualização em tempo real da frota, rotas e regiões, permitindo monitorar a operação e tomar decisões rápidas.
+            Visualização em tempo real da frota, rotas e regiões, permitindo monitorar a operação e priorizar decisões logísticas.
           </p>
         </div>
 
-        <div className="flex flex-wrap gap-3">
-          <button onClick={handleExportReport} className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
-            Exportar Relatório
-          </button>
-          <button onClick={handleAllocateFleet} className="bg-black text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm">
-            Alocar nova frota
-          </button>
+        <div className="flex flex-col items-end gap-3">
+          <div className="px-4 py-2 rounded-full bg-white border border-gray-200 text-xs font-bold uppercase tracking-wider text-gray-500 shadow-sm">
+            Última atualização: {lastUpdatedLabel}
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <button onClick={handleExportReport} className="bg-white border border-gray-200 px-4 py-2 rounded-xl font-medium text-sm hover:bg-gray-50 transition-colors shadow-sm">
+              Exportar Relatório
+            </button>
+            <button onClick={handleAllocateFleet} className="bg-black text-white px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-800 transition-colors shadow-sm">
+              Alocar nova frota
+            </button>
+          </div>
         </div>
       </div>
 
@@ -361,6 +376,7 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
         {metrics.map((metric) => {
           const Icon = metric.icon;
           const toneClass = metric.tone === 'critical' ? 'border-red-100 bg-red-50 text-red-800' : metric.tone === 'attention' ? 'border-yellow-100 bg-yellow-50 text-yellow-800' : 'border-gray-100 bg-white text-black';
+          const statusTone = metric.statusTone === 'critical' ? 'bg-red-100 text-red-800' : metric.statusTone === 'attention' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800';
 
           return (
             <div key={metric.label} className={`rounded-[20px] border p-4 shadow-sm ${toneClass}`}>
@@ -368,6 +384,9 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
                 <div>
                   <p className="text-sm font-medium opacity-70">{metric.label}</p>
                   <p className="mt-2 text-3xl font-black tracking-tight">{metric.value}</p>
+                  <span className={`mt-3 inline-flex items-center rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wider ${statusTone}`}>
+                    {metric.status}
+                  </span>
                 </div>
                 <div className="w-11 h-11 rounded-2xl bg-black/5 flex items-center justify-center">
                   <Icon size={18} />
@@ -384,11 +403,18 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.3em] text-[#FF4F00]">Filtros operacionais</p>
-                <h3 className="text-xl font-black tracking-tight mt-2">Filtrar a operação</h3>
+                <h3 className="text-xl font-black tracking-tight mt-2">Filtrar operação em tempo real</h3>
               </div>
               <div className="w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-500">
                 <Filter size={18} />
               </div>
+            </div>
+
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-gray-100 bg-gray-50 px-3 py-2">
+              <span className="text-xs font-bold uppercase tracking-[0.24em] text-gray-500">{activeFilterCount} filtros aplicados</span>
+              <button onClick={clearFilters} className="text-xs font-black uppercase tracking-wider text-[#FF4F00] hover:text-[#e64700]">
+                Limpar filtros
+              </button>
             </div>
 
             <div className="space-y-3">
@@ -443,7 +469,7 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
             <div className="flex items-start justify-between gap-3 mb-4">
               <div>
                 <p className="text-xs font-black uppercase tracking-[0.3em] text-[#FF4F00]">Rotas ativas</p>
-                <h3 className="text-xl font-black tracking-tight mt-2">Lista sincronizada com o mapa</h3>
+                <h3 className="text-xl font-black tracking-tight mt-2">Rotas priorizadas (sincronizadas com mapa)</h3>
               </div>
               <span className="text-xs font-bold uppercase tracking-wider text-gray-400">{visibleRoutes.length} rotas</span>
             </div>
@@ -463,13 +489,13 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
 
         <section className="bg-white rounded-[28px] shadow-sm border border-gray-100 p-4 md:p-5 space-y-4">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.3em] text-[#FF4F00]">Mapa operacional</p>
-              <h2 className="text-2xl font-black tracking-tight mt-2">Rotas, veículos e zonas de risco</h2>
-              <p className="text-gray-500 mt-2 max-w-3xl">
-                Centro de distribuição, linhas de entrega e leitura por regiões para acelerar decisões de priorização.
-              </p>
-            </div>
+              <div>
+                <p className="text-xs font-black uppercase tracking-[0.3em] text-[#FF4F00]">Mapa operacional</p>
+                <h2 className="text-2xl font-black tracking-tight mt-2">Monitoramento em tempo real de rotas, veículos e regiões críticas</h2>
+                <p className="text-gray-500 mt-2 max-w-3xl">
+                  Centro de distribuição, linhas de entrega e leitura por regiões para acelerar decisões de priorização.
+                </p>
+              </div>
 
             <div className="flex flex-wrap gap-2 text-[10px] font-black uppercase tracking-[0.24em] text-gray-500">
               <span className="px-3 py-1.5 rounded-full bg-green-50 text-green-800 border border-green-100">Em rota</span>
@@ -569,7 +595,18 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
                 Rotas conectadas ao mapa
               </div>
               <div className="max-w-2xl rounded-2xl bg-white/92 backdrop-blur-md px-4 py-3 text-sm text-gray-600 shadow-sm border border-white/60">
-                Visualização em tempo real da frota, rotas e regiões, permitindo monitorar a operação e tomar decisões rápidas.
+                Monitoramento em tempo real de rotas, veículos e regiões críticas.
+              </div>
+            </div>
+
+            <div className="absolute top-4 right-4 rounded-2xl bg-white/95 backdrop-blur-md p-3 shadow-sm border border-white/70 pointer-events-auto">
+              <div className="text-[10px] font-black uppercase tracking-[0.24em] text-gray-400 mb-2">Legenda</div>
+              <div className="space-y-1.5 text-xs font-semibold text-gray-600">
+                <div className="flex items-center gap-2"><span className="text-red-500">🔴</span> Crítico</div>
+                <div className="flex items-center gap-2"><span className="text-yellow-500">🟡</span> Atenção</div>
+                <div className="flex items-center gap-2"><span className="text-green-500">🟢</span> Normal</div>
+                <div className="flex items-center gap-2"><span>🚚</span> Veículo</div>
+                <div className="flex items-center gap-2"><span className="text-gray-700">━</span> Rota ativa</div>
               </div>
             </div>
 
@@ -649,6 +686,7 @@ function RouteItem({ route, selected, onSelect }: { key?: string | number; route
           <div className="min-w-0">
             <h5 className="font-black text-sm truncate">{route.id} • {route.driver}</h5>
             <p className="text-xs text-gray-500 font-medium mt-1">{route.region} · {route.destination}</p>
+            <p className="mt-2 text-[11px] font-black uppercase tracking-[0.22em] text-[#FF4F00]">ETA: {route.eta}</p>
           </div>
         </div>
         <div className="flex flex-col items-end gap-2 shrink-0">
