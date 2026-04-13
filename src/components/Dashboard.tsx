@@ -675,6 +675,13 @@ type PresentationSlide = {
   paragraphs?: string[];
 };
 
+type ClosingTheme = {
+  label: string;
+  summary: string;
+  execution: string;
+  impact: string;
+};
+
 const canvasBlocks = [
   { title: 'Segmentos de clientes', text: 'Pontos de venda de alto giro, centros de distribuição e áreas internas de logística, comercial e planejamento.', accent: 'bg-[#FF4F00]' },
   { title: 'Proposta de valor', text: 'Abastecimento preditivo com dados em tempo real, redução de ruptura e de desperdício, e eliminação de decisões emergenciais.', accent: 'bg-[#4E18FF]' },
@@ -787,6 +794,27 @@ const presentationSlides: PresentationSlide[] = [
     ],
     subtitle: 'A logística deixa de reagir ao problema e passa a antecipar o futuro.',
     layout: 'closing',
+  },
+];
+
+const closingThemes: ClosingTheme[] = [
+  {
+    label: 'Menos ruptura',
+    summary: 'Antecipar o risco antes do esgotamento para preservar a venda no PDV.',
+    execution: 'Priorizar pontos de venda críticos, redirecionar rota e acionar reposição no tempo certo.',
+    impact: 'Redução direta de perdas por ruptura e maior cobertura de estoque nos momentos críticos.',
+  },
+  {
+    label: 'Menor custo emergencial',
+    summary: 'Trocar resposta improvisada por decisão guiada por dados e criticidade.',
+    execution: 'Usar a torre de controle para acionar a frota certa e evitar fretes de urgência.',
+    impact: 'Menor gasto com emergência, mais previsibilidade operacional e melhor uso da capacidade.',
+  },
+  {
+    label: 'Mais nível de serviço',
+    summary: 'Aumentar a confiabilidade da operação com resposta rápida e coordenação entre áreas.',
+    execution: 'Integrar dados, alertas e execução para manter o abastecimento estável e comunicar antes do problema.',
+    impact: 'Melhora do nível de serviço, mais confiança do cliente e operação mais consistente.',
   },
 ];
 
@@ -1063,38 +1091,7 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
   }
 
   if (slide.layout === 'closing') {
-    return (
-      <section className="rounded-[28px] border border-gray-100 overflow-hidden min-h-[520px] p-8 bg-[linear-gradient(135deg,#000000_0%,#111111_60%,#FF4F00_220%)] text-white flex flex-col justify-between shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
-            <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
-            <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">{slide.subtitle}</p>
-          </div>
-          <div className="text-right shrink-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
-            <div className="text-xs font-bold text-white/50">Slide</div>
-            <div className="text-2xl font-black text-white">{slide.number}</div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-          {slide.paragraphs?.map((paragraph, index) => (
-            <div key={paragraph} className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-300 mb-3">
-                {index === 0 ? 'Síntese' : index === 1 ? 'Execução' : 'Impacto'}
-              </p>
-              <p className="text-sm leading-relaxed text-white/85">{paragraph}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <span className="rounded-full bg-white text-black px-4 py-2 text-sm font-bold">Menos ruptura</span>
-          <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white">Menor custo emergencial</span>
-          <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white">Mais nível de serviço</span>
-        </div>
-      </section>
-    );
+    return <ClosingSlideCard slide={slide} />;
   }
 
   return (
@@ -1122,6 +1119,73 @@ function FlowNode({ label, tone }: { label: string; tone: string }) {
 
 function FlowArrow() {
   return <div className="text-2xl font-black text-gray-300 shrink-0">→</div>;
+}
+
+function ClosingSlideCard({ slide }: { slide: PresentationSlide }) {
+  const [activeThemeIndex, setActiveThemeIndex] = useState(0);
+  const activeTheme = closingThemes[activeThemeIndex] ?? closingThemes[0];
+
+  return (
+    <section className="rounded-[28px] border border-gray-100 overflow-hidden min-h-[560px] p-8 bg-[linear-gradient(135deg,#000000_0%,#111111_60%,#FF4F00_220%)] text-white flex flex-col justify-between shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
+          <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+          <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">{slide.subtitle}</p>
+        </div>
+        <div className="text-right shrink-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+          <div className="text-xs font-bold text-white/50">Slide</div>
+          <div className="text-2xl font-black text-white">{slide.number}</div>
+        </div>
+      </div>
+
+      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-3">
+        {closingThemes.map((theme, index) => {
+          const isActive = index === activeThemeIndex;
+          return (
+            <button
+              key={theme.label}
+              type="button"
+              onClick={() => setActiveThemeIndex(index)}
+              className={`rounded-2xl border px-4 py-4 text-left transition-all ${isActive ? 'border-[#FF4F00] bg-white text-black shadow-lg' : 'border-white/10 bg-white/5 text-white/80 hover:bg-white/10'}`}
+            >
+              <p className={`text-[10px] font-black uppercase tracking-[0.3em] ${isActive ? 'text-[#FF4F00]' : 'text-orange-300'}`}>Tema</p>
+              <p className="mt-2 text-lg font-black leading-tight">{theme.label}</p>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur min-h-[180px]">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-300 mb-3">Síntese</p>
+          <p className="text-sm leading-relaxed text-white/85">{activeTheme.summary}</p>
+        </div>
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur min-h-[180px]">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-300 mb-3">Execução</p>
+          <p className="text-sm leading-relaxed text-white/85">{activeTheme.execution}</p>
+        </div>
+        <div className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur min-h-[180px]">
+          <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-300 mb-3">Impacto</p>
+          <p className="text-sm leading-relaxed text-white/85">{activeTheme.impact}</p>
+        </div>
+      </div>
+
+      <div className="mt-8 flex flex-wrap items-center gap-3">
+        {closingThemes.map((theme, index) => {
+          const isActive = index === activeThemeIndex;
+          return (
+            <span
+              key={theme.label}
+              className={`rounded-full px-4 py-2 text-sm font-bold ${isActive ? 'bg-white text-black' : 'bg-white/10 text-white'}`}
+            >
+              {theme.label}
+            </span>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
 
 function SlideHeader({ slide }: { slide: any }) {
