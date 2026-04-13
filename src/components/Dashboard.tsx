@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2 } from 'lucide-react';
+import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2, Presentation, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import jsPDF from 'jspdf';
 import { BackToTopButton } from './BackToTopButton';
 
@@ -791,6 +791,40 @@ const presentationSlides: PresentationSlide[] = [
 ];
 
 export function PresentationDeck() {
+  const [presentationOpen, setPresentationOpen] = useState(false);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+  const goToNextSlide = () => {
+    setActiveSlideIndex((current) => Math.min(current + 1, presentationSlides.length - 1));
+  };
+
+  const goToPrevSlide = () => {
+    setActiveSlideIndex((current) => Math.max(current - 1, 0));
+  };
+
+  const openPresentation = () => {
+    setActiveSlideIndex(0);
+    setPresentationOpen(true);
+  };
+
+  useEffect(() => {
+    if (!presentationOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'ArrowRight') goToNextSlide();
+      if (event.key === 'ArrowLeft') goToPrevSlide();
+      if (event.key === 'Escape') setPresentationOpen(false);
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [presentationOpen]);
+
   return (
     <div className="p-8 max-w-[1600px] mx-auto space-y-8">
       <div className="flex justify-between items-end gap-6 flex-wrap">
@@ -799,19 +833,101 @@ export function PresentationDeck() {
           <h1 className="text-4xl font-bold tracking-tight text-black mt-2">Logística preditiva para o Grupo Bimbo</h1>
           <p className="text-gray-500 mt-2 text-lg">Slides prontos para uma narrativa clara, objetiva e profissional.</p>
         </div>
-        <div className="flex items-center gap-3 text-sm text-gray-500">
-          <div className="px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm">Estilo consultoria estratégica</div>
-          <div className="px-4 py-2 rounded-full bg-black text-white shadow-sm">{presentationSlides.length} slides</div>
+        <div className="flex flex-col items-end gap-3 text-sm text-gray-500">
+          <div className="flex items-center gap-3">
+            <div className="px-4 py-2 rounded-full bg-white border border-gray-200 shadow-sm">Estilo consultoria estratégica</div>
+            <div className="px-4 py-2 rounded-full bg-black text-white shadow-sm">{presentationSlides.length} slides</div>
+          </div>
+          <button
+            type="button"
+            onClick={openPresentation}
+            className="inline-flex items-center gap-2 rounded-full bg-[#FF4F00] px-4 py-2 text-sm font-bold text-black shadow-[0_10px_24px_rgba(255,79,0,0.24)] transition-colors hover:bg-[#e64700]"
+          >
+            <Presentation size={16} />
+            Apresentação
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {presentationSlides.map((slide) => (
-          <SlideCard slide={slide} />
+          <div key={slide.number}>
+            <SlideCard slide={slide} />
+          </div>
         ))}
       </div>
 
       <BackToTopButton threshold={420} />
+
+      {presentationOpen && (
+        <div className="fixed inset-0 z-[80] bg-black/95 text-white">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between gap-4 border-b border-white/10 px-6 py-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.35em] text-orange-300">Modo de apresentação</p>
+                <h2 className="mt-2 text-xl font-black tracking-tight">Logística preditiva para o Grupo Bimbo</h2>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPresentationOpen(false)}
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
+              >
+                <X size={16} />
+                Fechar
+              </button>
+            </div>
+
+            <div className="flex flex-1 flex-col overflow-hidden px-4 py-4 md:px-8 md:py-6">
+              <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col gap-4">
+                <div className="flex items-center justify-between gap-3 text-sm text-white/70">
+                  <span>Use as setas do teclado para navegar</span>
+                  <span>
+                    Slide {activeSlideIndex + 1} de {presentationSlides.length}
+                  </span>
+                </div>
+
+                <div className="flex-1 overflow-auto rounded-[32px] bg-[#f7f7f4] p-4 shadow-2xl md:p-6">
+                  <SlideCard slide={presentationSlides[activeSlideIndex]} />
+                </div>
+
+                <div className="flex flex-col gap-3 rounded-3xl border border-white/10 bg-white/5 px-4 py-4 backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+                  <button
+                    type="button"
+                    onClick={goToPrevSlide}
+                    disabled={activeSlideIndex === 0}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <ChevronLeft size={16} />
+                    Anterior
+                  </button>
+
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    {presentationSlides.map((slide, index) => (
+                      <button
+                        key={slide.number}
+                        type="button"
+                        onClick={() => setActiveSlideIndex(index)}
+                        className={`h-2.5 rounded-full transition-all ${index === activeSlideIndex ? 'w-8 bg-[#FF4F00]' : 'w-2.5 bg-white/30 hover:bg-white/50'}`}
+                        aria-label={`Ir para o slide ${slide.number}`}
+                      />
+                    ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={goToNextSlide}
+                    disabled={activeSlideIndex === presentationSlides.length - 1}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF4F00] px-4 py-2 text-sm font-bold text-black transition-colors hover:bg-[#e64700] disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    Próximo
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -948,25 +1064,35 @@ function SlideCard({ slide }: { slide: PresentationSlide }) {
 
   if (slide.layout === 'closing') {
     return (
-      <section className={`${base} min-h-[320px] p-8 bg-black text-white xl:col-span-2 flex flex-col justify-between`}>
-        <div>
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
-              <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
-            </div>
-            <div className="text-right shrink-0">
-              <div className="text-xs font-bold text-white/50">Slide</div>
-              <div className="text-2xl font-black text-white">{slide.number}</div>
-            </div>
+      <section className="rounded-[28px] border border-gray-100 overflow-hidden min-h-[520px] p-8 bg-[linear-gradient(135deg,#000000_0%,#111111_60%,#FF4F00_220%)] text-white flex flex-col justify-between shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-xs uppercase tracking-[0.35em] text-orange-300 font-bold">{slide.eyebrow}</p>
+            <h2 className="text-4xl font-black tracking-tight mt-3 max-w-2xl">{slide.title}</h2>
+            <p className="mt-4 text-lg text-white/80 max-w-2xl leading-relaxed">{slide.subtitle}</p>
           </div>
-          <div className="mt-6 space-y-4 max-w-3xl text-sm text-white/78 leading-relaxed">
-            {slide.paragraphs?.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+          <div className="text-right shrink-0 rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+            <div className="text-xs font-bold text-white/50">Slide</div>
+            <div className="text-2xl font-black text-white">{slide.number}</div>
           </div>
         </div>
-        <p className="text-lg font-semibold text-white max-w-2xl">{slide.subtitle}</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
+          {slide.paragraphs?.map((paragraph, index) => (
+            <div key={paragraph} className="rounded-3xl border border-white/10 bg-white/5 p-5 backdrop-blur">
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-orange-300 mb-3">
+                {index === 0 ? 'Síntese' : index === 1 ? 'Execução' : 'Impacto'}
+              </p>
+              <p className="text-sm leading-relaxed text-white/85">{paragraph}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <span className="rounded-full bg-white text-black px-4 py-2 text-sm font-bold">Menos ruptura</span>
+          <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white">Menor custo emergencial</span>
+          <span className="rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white">Mais nível de serviço</span>
+        </div>
       </section>
     );
   }
