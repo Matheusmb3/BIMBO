@@ -526,10 +526,10 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
                   positions={zone.coords}
                   pathOptions={{
                     color: zone.border,
-                    weight: 2,
                     fillColor: zone.fill,
-                    fillOpacity: zone.tone === 'critical' ? 0.16 : zone.tone === 'attention' ? 0.11 : 0.08,
+                    fillOpacity: (zone.tone === 'critical' ? 0.16 : zone.tone === 'attention' ? 0.11 : 0.08) + (selectedRoute.region === zone.name ? 0.08 : 0),
                     dashArray: zone.tone === 'critical' ? '10 8' : zone.tone === 'attention' ? '6 8' : undefined,
+                    weight: selectedRoute.region === zone.name ? 3 : 2,
                   }}
                 />
               ))}
@@ -676,7 +676,7 @@ function RouteItem({ route, selected, onSelect }: { key?: string | number; route
     <button
       type="button"
       onClick={onSelect}
-      className={`w-full text-left rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-[#FF4F00] bg-[#FF4F00]/5 shadow-md' : 'border-gray-100 hover:bg-gray-50 hover:border-gray-200'}`}
+      className={`w-full text-left rounded-2xl border p-4 transition-all duration-200 ${selected ? 'border-[#FF4F00] bg-[#FF4F00]/5 shadow-[0_12px_30px_rgba(255,79,0,0.12)] ring-1 ring-[#FF4F00]/10' : 'border-gray-100 hover:bg-gray-50 hover:border-gray-200'}`}
     >
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-start gap-3 min-w-0">
@@ -692,6 +692,7 @@ function RouteItem({ route, selected, onSelect }: { key?: string | number; route
         <div className="flex flex-col items-end gap-2 shrink-0">
           <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${statusTone}`}>{route.status}</span>
           <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${priorityTone}`}>Prioridade {route.priority}</span>
+          {selected && <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-black text-white">Selecionada</span>}
         </div>
       </div>
 
