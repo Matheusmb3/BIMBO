@@ -1,4 +1,5 @@
 import { AlertTriangle, CheckCircle, Clock, ArrowRight } from 'lucide-react';
+import { BackToTopButton } from './BackToTopButton';
 
 export function AlertsPanel({ focusStoreId, focusAction }: { focusStoreId?: string; focusAction?: unknown }) {
   void focusAction;
@@ -98,6 +99,8 @@ export function AlertsPanel({ focusStoreId, focusAction }: { focusStoreId?: stri
           </div>
         </div>
       </div>
+
+      <BackToTopButton threshold={220} />
     </div>
   );
 }

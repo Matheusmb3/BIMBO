@@ -1,4 +1,4 @@
-﻿import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
@@ -15,6 +15,7 @@ import {
   Truck,
   Wallet,
 } from 'lucide-react';
+import { BackToTopButton } from './BackToTopButton';
 
 const steps = [
   { id: 'inicio', label: 'Inicio', title: 'Painel do PDV', subtitle: 'Resumo rapido do dia com alertas e atalhos.', accent: '#FF4F00' },
@@ -57,6 +58,7 @@ const stepCopy = [
 
 export function POSApp({ initialStep = 0, focusAction }: { initialStep?: number; focusAction?: unknown }) {
   const [activeStep, setActiveStep] = useState(initialStep);
+  const scrollRef = useRef<HTMLDivElement>(null);
   void focusAction;
   const current = steps[activeStep];
   const progress = useMemo(() => ((activeStep + 1) / steps.length) * 100, [activeStep]);
@@ -168,7 +170,7 @@ export function POSApp({ initialStep = 0, focusAction }: { initialStep?: number;
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 pb-24 space-y-5">
+        <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 pb-24 space-y-5">
             <div className="flex items-center justify-between gap-3">
               {steps.map((step, index) => {
                 const isActive = index === activeStep;
@@ -203,6 +205,8 @@ export function POSApp({ initialStep = 0, focusAction }: { initialStep?: number;
             </div>
           </div>
         </div>
+
+        <BackToTopButton threshold={180} containerRef={scrollRef} />
       </div>
     </div>
   );

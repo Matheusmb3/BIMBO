@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2 } from 'lucide-react';
 import jsPDF from 'jspdf';
+import { BackToTopButton } from './BackToTopButton';
 
 const consumptionData = [
   { time: '08:00', paoForma: 120, bisnaguinha: 80, rap10: 40 },
@@ -156,7 +157,6 @@ const decisionRules = [
 
 export function Dashboard({ focusAction, onAction }: DashboardProps) {
   const [activeSection, setActiveSection] = useState('kpis');
-  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const activeStepIndex = useMemo(() => navigationSteps.findIndex((step) => step.id === activeSection), [activeSection]);
 
@@ -194,22 +194,9 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
     return () => observer.disconnect();
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setShowBackToTop(window.scrollY > 420);
-
-    handleScroll();
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   const goToSection = (id: string) => {
     setActiveSection(id);
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  };
-
-  const goToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setActiveSection('kpis');
   };
 
   const handleExportReport = () => {
@@ -593,15 +580,7 @@ export function Dashboard({ focusAction, onAction }: DashboardProps) {
         </div>
       </section>
 
-      {showBackToTop && (
-        <button
-          onClick={goToTop}
-          className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-black px-4 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all hover:bg-gray-800"
-        >
-          <ArrowUp size={16} />
-          Voltar ao topo
-        </button>
-      )}
+      <BackToTopButton threshold={420} />
 
     </div>
   );
@@ -831,6 +810,8 @@ export function PresentationDeck() {
           <SlideCard slide={slide} />
         ))}
       </div>
+
+      <BackToTopButton threshold={420} />
     </div>
   );
 }
@@ -1187,6 +1168,8 @@ export function Canvas() {
         <CanvasCard block={classicCanvasBlocks[7]} />
         <CanvasCard block={classicCanvasBlocks[8]} />
       </div>
+
+      <BackToTopButton threshold={420} />
     </div>
   );
 }
