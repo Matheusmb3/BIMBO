@@ -2,7 +2,7 @@
 import { divIcon, type DivIcon } from 'leaflet';
 import { MapContainer, Marker, Polygon, Polyline, Popup, TileLayer, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { AlertCircle, CheckCircle2, Clock, Filter, MapPin, Route, Sparkles, Truck } from 'lucide-react';
+import { AlertCircle, ArrowUp, CheckCircle2, Clock, Filter, MapPin, Route, Sparkles, Truck } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 type RouteStatus = 'Em Rota' | 'Atrasado' | 'Crítico';
@@ -232,6 +232,7 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
   const [selectedStatus, setSelectedStatus] = useState<RouteStatus | 'Todos'>('Todos');
   const [selectedPriority, setSelectedPriority] = useState<RoutePriority | 'Todas'>('Todas');
   const [allocationSuggestion, setAllocationSuggestion] = useState<string | null>(null);
+  const [showBackToTop, setShowBackToTop] = useState(false);
 
   const activeFilterCount = [selectedRegion !== 'Todas', selectedStatus !== 'Todos', selectedPriority !== 'Todas'].filter(Boolean).length;
 
@@ -240,6 +241,15 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
       setSelectedRouteId(highlightRouteId);
     }
   }, [highlightRouteId]);
+
+  useEffect(() => {
+    const handleScroll = () => setShowBackToTop(window.scrollY > 280);
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const visibleRoutes = useMemo(() => {
     return routes.filter((route) => {
@@ -287,6 +297,10 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
     setSelectedRegion('Todas');
     setSelectedStatus('Todos');
     setSelectedPriority('Todas');
+  };
+
+  const goToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleExportReport = () => {
@@ -658,6 +672,16 @@ export function RoutesFleet({ highlightRouteId, focusAction }: { highlightRouteI
           </div>
         </section>
       </div>
+
+      {showBackToTop && (
+        <button
+          onClick={goToTop}
+          className="fixed bottom-6 right-6 z-50 inline-flex items-center gap-2 rounded-full bg-black px-4 py-3 text-sm font-bold text-white shadow-[0_12px_30px_rgba(0,0,0,0.25)] transition-all hover:bg-gray-800"
+        >
+          <ArrowUp size={16} />
+          Voltar ao topo
+        </button>
+      )}
     </div>
   );
 }
