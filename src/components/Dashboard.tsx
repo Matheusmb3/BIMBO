@@ -960,6 +960,145 @@ export function PresentationDeck() {
   );
 }
 
+type PitchIntroProps = {
+  onNext: () => void;
+};
+
+export function PitchIntro({ onNext }: PitchIntroProps) {
+  return (
+    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(255,79,0,0.22),_transparent_34%),radial-gradient(circle_at_bottom_right,_rgba(78,24,255,0.18),_transparent_28%),linear-gradient(135deg,#050505_0%,#101010_48%,#1a1a1a_100%)] text-white">
+      <div className="pointer-events-none absolute inset-0 opacity-30">
+        <div className="absolute left-[-8%] top-[-12%] h-80 w-80 rounded-full bg-[#FF4F00] blur-3xl" />
+        <div className="absolute right-[-5%] bottom-[-10%] h-96 w-96 rounded-full bg-[#4E18FF] blur-3xl" />
+      </div>
+
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-[1600px] flex-col px-6 py-6 md:px-10 md:py-8">
+        <div className="flex items-center justify-between gap-4">
+          <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-2 backdrop-blur">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#FF4F00] text-sm font-black text-black">B</div>
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.35em] text-orange-300">Pitch Executivo</p>
+              <p className="text-xs text-white/60">Grupo Bimbo</p>
+            </div>
+          </div>
+
+          <div className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 backdrop-blur">
+            Abertura do pitch
+          </div>
+        </div>
+
+        <div className="grid flex-1 items-center gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+          <div className="max-w-3xl space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-4 py-2 text-xs font-bold uppercase tracking-[0.3em] text-orange-300 backdrop-blur">
+              <Sparkles size={14} />
+              Solução logística orientada por dados
+            </div>
+
+            <h1 className="text-5xl font-black tracking-tight text-white md:text-6xl xl:text-7xl">
+              Transformando a logística: do reativo ao preditivo
+            </h1>
+
+            <p className="max-w-2xl text-lg leading-relaxed text-white/78 md:text-xl">
+              Solução integrada para otimizar abastecimento, reduzir desperdícios e melhorar a tomada de decisão em tempo real.
+            </p>
+
+            <div className="grid gap-3 sm:grid-cols-3">
+              <MetricPill icon={Clock3} label="Problema" value="Resposta tardia" />
+              <MetricPill icon={Network} label="Base" value="Dados em tempo real" />
+              <MetricPill icon={Target} label="Objetivo" value="Antecipar rupturas" />
+            </div>
+
+            <div className="rounded-[28px] border border-white/10 bg-white/6 p-6 backdrop-blur-xl">
+              <p className="text-xs font-bold uppercase tracking-[0.35em] text-white/55">Frase de impacto</p>
+              <p className="mt-3 text-3xl font-black tracking-tight text-white md:text-4xl">
+                A operação deixa de reagir e passa a antecipar.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid gap-5">
+            <div className="rounded-[30px] border border-white/10 bg-white/5 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.35em] text-red-300">Desafio atual</p>
+                  <h2 className="mt-2 text-2xl font-black text-white">Operação reativa</h2>
+                </div>
+                <div className="rounded-2xl bg-red-500/15 p-3 text-red-200 ring-1 ring-red-400/20">
+                  <Bell size={20} />
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-3 text-sm text-white/78">
+                <PitchLine icon={Clock3} text="Decisões tardias e ações emergenciais" />
+                <PitchLine icon={Network} text="Baixa integração entre áreas e sistemas" />
+                <PitchLine icon={Truck} text="Ruptura, desperdício e custo alto" />
+                <PitchLine icon={Target} text="Operação responde ao problema depois que ele acontece" />
+              </div>
+            </div>
+
+            <div className="rounded-[30px] border border-[#FF4F00]/25 bg-[linear-gradient(180deg,rgba(255,79,0,0.15),rgba(255,79,0,0.04))] p-6 shadow-[0_30px_80px_rgba(0,0,0,0.28)] backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.35em] text-orange-300">Nossa solução</p>
+                  <h2 className="mt-2 text-2xl font-black text-white">Gestão preditiva</h2>
+                </div>
+                <div className="rounded-2xl bg-black/35 p-3 text-[#FF4F00] ring-1 ring-white/10">
+                  <Brain size={20} />
+                </div>
+              </div>
+
+              <div className="mt-5 space-y-3 text-sm text-white/84">
+                <PitchLine icon={BarChart3} text="Dados em tempo real e visibilidade operacional" />
+                <PitchLine icon={Target} text="Torre de controle para priorização e decisão" />
+                <PitchLine icon={Route} text="Roteirização inteligente e ações automatizadas" />
+                <PitchLine icon={CheckCircle2} text="Menos ruptura, mais eficiência e serviço" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 border-t border-white/10 pt-5 md:flex-row md:items-end md:justify-between">
+          <p className="max-w-2xl text-sm leading-relaxed text-white/60">
+            Uma abertura enxuta e executiva para conduzir a narrativa: problema, solução e sequência operacional.
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        onClick={onNext}
+        className="group fixed bottom-6 right-6 z-20 inline-flex items-center gap-3 rounded-full bg-[#FF4F00] px-5 py-3 text-sm font-black text-black shadow-[0_18px_50px_rgba(255,79,0,0.35)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#ff5d14] focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black"
+      >
+        Próximo
+        <ChevronRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+      </button>
+    </section>
+  );
+}
+
+function MetricPill({ icon: Icon, label, value }: { icon: ComponentType<{ size?: number; className?: string }>; label: string; value: string }) {
+  return (
+      <div className="rounded-3xl border border-white/10 bg-white/5 p-4 backdrop-blur-xl">
+      <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.28em] text-white/50">
+        <Icon size={14} className="text-[#FF4F00]" />
+        {label}
+      </div>
+      <p className="mt-3 text-lg font-black text-white">{value}</p>
+    </div>
+  );
+}
+
+function PitchLine({ icon: Icon, text }: { icon: ComponentType<{ size?: number; className?: string }>; text: string }) {
+  return (
+    <div className="flex items-start gap-3 rounded-2xl bg-black/20 px-4 py-3 ring-1 ring-white/5">
+      <div className="mt-0.5 rounded-full bg-white/10 p-2 text-[#FF4F00]">
+        <Icon size={14} />
+      </div>
+      <p className="leading-relaxed">{text}</p>
+    </div>
+  );
+}
+
 function SlideCard({ slide }: { slide: PresentationSlide }) {
   const base = 'bg-white rounded-[28px] border border-gray-100 shadow-[0_20px_60px_rgba(0,0,0,0.08)] overflow-hidden';
 

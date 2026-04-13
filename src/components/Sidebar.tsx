@@ -1,4 +1,4 @@
-import { LayoutDashboard, Smartphone, Truck, AlertTriangle, Presentation, LayoutGrid } from "lucide-react";
+import { LayoutDashboard, Smartphone, Truck, AlertTriangle, Presentation, LayoutGrid, Sparkles } from "lucide-react";
 import { cn } from "../lib/utils";
 
 interface SidebarProps {
@@ -8,6 +8,7 @@ interface SidebarProps {
 
 export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const navItems = [
+    { id: "pitch", label: "Pitch Executivo", icon: Sparkles },
     { id: "dashboard", label: "Torre de Controle", icon: LayoutDashboard },
     { id: "presentation", label: "Apresentação Executiva", icon: Presentation },
     { id: "canvas", label: "Canvas", icon: LayoutGrid },

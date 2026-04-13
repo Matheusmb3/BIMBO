@@ -6,7 +6,7 @@
 import { useState } from 'react';
 import { LayoutDashboard } from 'lucide-react';
 import { Sidebar } from './components/Sidebar';
-import { Canvas, Dashboard, PresentationDeck } from './components/Dashboard';
+import { Canvas, Dashboard, PitchIntro, PresentationDeck } from './components/Dashboard';
 import { POSApp } from './components/POSApp';
 import { RoutesFleet } from './components/RoutesFleet';
 import { AlertsPanel } from './components/AlertsPanel';
@@ -37,7 +37,7 @@ export default function App() {
       <Sidebar activeTab={activeTab} setActiveTab={handleTabChange} />
       
       <main className="flex-1 ml-64 overflow-y-auto">
-        {activeTab !== 'dashboard' && (
+        {activeTab !== 'dashboard' && activeTab !== 'pitch' && (
           <button
             type="button"
             onClick={() => handleTabChange('dashboard')}
@@ -48,6 +48,7 @@ export default function App() {
           </button>
         )}
         {activeTab === 'dashboard' && <Dashboard focusAction={actionFocus} onAction={handleAction} />}
+        {activeTab === 'pitch' && <PitchIntro onNext={() => handleTabChange('dashboard')} />}
         {activeTab === 'presentation' && <PresentationDeck />}
         {activeTab === 'canvas' && <Canvas />}
         {activeTab === 'pos-app' && <POSApp initialStep={actionFocus?.step ?? 0} focusAction={actionFocus} />}
