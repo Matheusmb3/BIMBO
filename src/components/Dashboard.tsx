@@ -1171,19 +1171,6 @@ function ClosingSlideCard({ slide }: { slide: PresentationSlide }) {
         </div>
       </div>
 
-      <div className="mt-8 flex flex-wrap items-center gap-3">
-        {closingThemes.map((theme, index) => {
-          const isActive = index === activeThemeIndex;
-          return (
-            <span
-              key={theme.label}
-              className={`rounded-full px-4 py-2 text-sm font-bold ${isActive ? 'bg-white text-black' : 'bg-white/10 text-white'}`}
-            >
-              {theme.label}
-            </span>
-          );
-        })}
-      </div>
     </section>
   );
 }
