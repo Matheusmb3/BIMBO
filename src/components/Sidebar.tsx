@@ -10,11 +10,11 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
   const navItems = [
     { id: "pitch", label: "Pitch Executivo", icon: Sparkles },
     { id: "dashboard", label: "Torre de Controle", icon: LayoutDashboard },
-    { id: "presentation", label: "Apresentação Executiva", icon: Presentation },
-    { id: "canvas", label: "Canvas", icon: LayoutGrid },
     { id: "pos-app", label: "App do Cliente (PDV)", icon: Smartphone },
     { id: "routes", label: "Rotas & Frota", icon: Truck },
     { id: "alerts", label: "Alertas de Ruptura", icon: AlertTriangle },
+    { id: "presentation", label: "Apresentação Executiva", icon: Presentation },
+    { id: "canvas", label: "Canvas", icon: LayoutGrid },
   ];
 
   return (
