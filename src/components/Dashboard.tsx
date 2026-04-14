@@ -704,6 +704,16 @@ const presentationSlides: PresentationSlide[] = [
   },
   {
     number: '02',
+    eyebrow: 'Persona',
+    title: 'Mariana Souza, Coordenadora Administrativa',
+    bullets: [
+      'Precisa enxergar a operação em tempo real',
+      'Enfrenta dificuldade para alinhar áreas',
+      'Tem pressão constante por eficiência e resposta rápida',
+    ],
+  },
+  {
+    number: '03',
     eyebrow: 'Contexto e Problema',
     title: 'O cenário atual combina urgência, baixa visibilidade e custo alto',
     bullets: [
@@ -711,16 +721,6 @@ const presentationSlides: PresentationSlide[] = [
       'Falta de integração entre áreas',
       'Baixa visibilidade da operação',
       'Frete emergencial pressionando a margem',
-    ],
-  },
-  {
-    number: '03',
-    eyebrow: 'Persona',
-    title: 'Mariana Souza, Coordenadora Administrativa',
-    bullets: [
-      'Precisa enxergar a operação em tempo real',
-      'Enfrenta dificuldade para alinhar áreas',
-      'Tem pressão constante por eficiência e resposta rápida',
     ],
   },
   {
