@@ -1,4 +1,4 @@
-import { LayoutDashboard, Smartphone, Truck, AlertTriangle, Presentation, LayoutGrid, Sparkles } from "lucide-react";
+import { LayoutDashboard, Smartphone, Truck, AlertTriangle, Presentation, LayoutGrid, Sparkles, CheckCircle } from "lucide-react";
 import { cn } from "../lib/utils";
 
 interface SidebarProps {
@@ -13,6 +13,7 @@ export function Sidebar({ activeTab, setActiveTab }: SidebarProps) {
     { id: "pos-app", label: "App do Cliente (PDV)", icon: Smartphone },
     { id: "routes", label: "Rotas & Frota", icon: Truck },
     { id: "alerts", label: "Alertas de Ruptura", icon: AlertTriangle },
+    { id: "closing", label: "Fechamento", icon: CheckCircle },
     { id: "presentation", label: "Apresentação Executiva", icon: Presentation },
     { id: "canvas", label: "Canvas", icon: LayoutGrid },
   ];

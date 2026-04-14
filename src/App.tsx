@@ -54,6 +54,11 @@ export default function App() {
         {activeTab === 'pos-app' && <POSApp initialStep={actionFocus?.step ?? 0} focusAction={actionFocus} />}
         {activeTab === 'routes' && <RoutesFleet highlightRouteId={actionFocus?.key} focusAction={actionFocus} />}
         {activeTab === 'alerts' && <AlertsPanel focusStoreId={actionFocus?.key} focusAction={actionFocus} />}
+        {activeTab === 'closing' && (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-2xl font-bold text-gray-400">Tela de Fechamento - Em breve</p>
+          </div>
+        )}
       </main>
     </div>
   );
