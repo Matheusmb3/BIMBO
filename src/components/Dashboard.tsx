@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type ComponentType } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
-import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2, Presentation, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { Truck, TrendingUp, TrendingDown, ArrowRight, BarChart3, Boxes, Clock3, Network, ShieldCheck, Sparkles, Target, Users, Bell, ArrowUpRight, ArrowUp, Route, PackageCheck, LineChart as LineChartIcon, Eye, Brain, Zap, CheckCircle2, Presentation, ChevronLeft, ChevronRight, X, Download } from 'lucide-react';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { BackToTopButton } from './BackToTopButton';
 
 const consumptionData = [
@@ -821,6 +822,7 @@ const closingThemes: ClosingTheme[] = [
 export function PresentationDeck() {
   const [presentationOpen, setPresentationOpen] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+  const [isExporting, setIsExporting] = useState(false);
 
   const goToNextSlide = () => {
     setActiveSlideIndex((current) => Math.min(current + 1, presentationSlides.length - 1));
@@ -833,6 +835,77 @@ export function PresentationDeck() {
   const openPresentation = () => {
     setActiveSlideIndex(0);
     setPresentationOpen(true);
+  };
+
+  const exportToPDF = async () => {
+    setIsExporting(true);
+    
+    try {
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const slideWidth = 297;
+      const slideHeight = 210;
+      const scale = 1;
+
+      const exportContainer = document.createElement('div');
+      exportContainer.style.position = 'absolute';
+      exportContainer.style.left = '-9999px';
+      exportContainer.style.width = '1400px';
+      exportContainer.style.backgroundColor = '#f7f7f4';
+      document.body.appendChild(exportContainer);
+
+      for (let i = 0; i < presentationSlides.length; i++) {
+        const slideWrapper = document.createElement('div');
+        exportContainer.appendChild(slideWrapper);
+        
+        const slideElement = document.getElementById(`slide-export-${i}`);
+        if (!slideElement) {
+          slideWrapper.remove();
+          continue;
+        }
+
+        const clone = slideElement.cloneNode(true) as HTMLElement;
+        clone.style.width = '1400px';
+        clone.style.height = 'auto';
+        slideWrapper.appendChild(clone);
+
+        await new Promise(resolve => setTimeout(resolve, 100));
+
+        try {
+          const canvas = await html2canvas(clone, {
+            scale,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#f7f7f4',
+            windowWidth: 1400
+          });
+
+          const imgData = canvas.toDataURL('image/jpeg', 0.8);
+          
+          if (i > 0) {
+            pdf.addPage();
+          }
+          
+          pdf.addImage(imgData, 'JPEG', 0, 0, slideWidth, slideHeight);
+        } catch (slideError) {
+          console.error(`Erro no slide ${i}:`, slideError);
+        }
+
+        slideWrapper.remove();
+      }
+
+      document.body.removeChild(exportContainer);
+      pdf.save('apresentacao-logistica-bimbo.pdf');
+    } catch (error) {
+      console.error('Erro ao exportar PDF:', error);
+      alert('Erro ao exportar PDF. Tente novamente.');
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   useEffect(() => {
@@ -878,8 +951,8 @@ export function PresentationDeck() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-        {presentationSlides.map((slide) => (
-          <div key={slide.number}>
+        {presentationSlides.map((slide, index) => (
+          <div key={slide.number} id={`slide-export-${index}`}>
             <SlideCard slide={slide} />
           </div>
         ))}
@@ -895,14 +968,25 @@ export function PresentationDeck() {
                 <p className="text-xs font-bold uppercase tracking-[0.35em] text-orange-300">Modo de apresentação</p>
                 <h2 className="mt-2 text-xl font-black tracking-tight">Logística preditiva para o Grupo Bimbo</h2>
               </div>
-              <button
-                type="button"
-                onClick={() => setPresentationOpen(false)}
-                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
-              >
-                <X size={16} />
-                Fechar
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={exportToPDF}
+                  disabled={isExporting}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10 disabled:opacity-50"
+                >
+                  <Download size={16} />
+                  {isExporting ? 'Exportando...' : 'Exportar PDF'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPresentationOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white transition-colors hover:bg-white/10"
+                >
+                  <X size={16} />
+                  Fechar
+                </button>
+              </div>
             </div>
 
             <div className="flex flex-1 flex-col overflow-hidden px-4 py-4 md:px-8 md:py-6">
